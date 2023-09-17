@@ -43,12 +43,21 @@ module.exports.index = async (req, res) => {
         findConditions.status = req.query.status;
     }
 
+    let keyword = "";
+    if (req.query.keyword) {
+        keyword = req.query.keyword;
+
+        const regex = new RegExp(keyword, "i");
+        findConditions.title = regex;
+    }
+
     const products = await Product.find(findConditions);
 
 
     res.render('admin/pages/products/index', {
         pageTitle: "Product Catalog",
         products: products,
-        filterStatus: filterStatus
+        filterStatus: filterStatus,
+        keyword: keyword
     });
 }
