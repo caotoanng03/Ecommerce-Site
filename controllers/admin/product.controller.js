@@ -1,12 +1,12 @@
 const Product = require("../../models/product.model");
-const filterStatusHeper = require("../../helpers/filterStatus");
-const searchHeper = require("../../helpers/search");
-const paginationHeper = require("../../helpers/pagination");
+const filterStatusHelper = require("../../helpers/filterStatus");
+const searchHelper = require("../../helpers/search");
+const paginationHelper = require("../../helpers/pagination");
 
 // [GET] /admin/products
 module.exports.index = async (req, res) => {
-    const filterStatus = filterStatusHeper(req.query);
-    let objectSearch = searchHeper(req.query);
+    const filterStatus = filterStatusHelper(req.query);
+    let objectSearch = searchHelper(req.query);
 
     let findConditions = {
         deleted: false
@@ -26,13 +26,15 @@ module.exports.index = async (req, res) => {
         limitItems: 4
     };
     const countProducts = await Product.count(findConditions);
-    const objectPagination = paginationHeper(initPagination, req.query, countProducts);
-    // End Pagination
+    const objectPagination = paginationHelper(initPagination, req.query, countProducts);
 
+    // End Pagination
+    // console.log(countProducts);
     const products = await Product.find(findConditions)
         .limit(objectPagination.limitItems)
         .skip(objectPagination.skip)
 
+    // console.log(products);
 
     res.render('admin/pages/products/index', {
         pageTitle: "Product Catalog",
@@ -42,3 +44,13 @@ module.exports.index = async (req, res) => {
         pagination: objectPagination
     });
 }
+
+// [PATCH] /admin/products/change-status/:status/:id
+module.exports.changeStatus = async (req, res) => {
+    const status = req.params.status;
+    const id = req.params.id;
+
+    await Product.updateOne({ _id: id }, { status: status });
+
+    res.redirect('back');
+};

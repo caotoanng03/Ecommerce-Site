@@ -2,7 +2,6 @@
 const buttonsStatus = document.querySelectorAll("[button-status]");
 if (buttonsStatus.length > 0) {
     let url = new URL(window.location.href);
-    console.log(url);
 
     buttonsStatus.forEach(button => {
         button.addEventListener("click", () => {
@@ -52,3 +51,24 @@ if (buttonsPagination.length > 0) {
     });
 };
 // End Pagination
+
+// Change Status
+const buttonsChangeStatus = document.querySelectorAll('[button-change-status]');
+if (buttonsChangeStatus.length > 0) {
+    const changeStatusForm = document.querySelector('#form-change-status');
+    const path = changeStatusForm.getAttribute('data-path');
+
+    buttonsChangeStatus.forEach(button => {
+        button.addEventListener("click", () => {
+            const currentStatus = button.getAttribute('data-status');
+            const id = button.getAttribute('data-id');
+
+            const changedStatus = currentStatus == "active" ? "inactive" : "active";
+            const action = path + `/${changedStatus}/${id}?_method=PATCH`;
+            changeStatusForm.action = action;
+
+            changeStatusForm.submit();
+        });
+    });
+}
+// End Change Status
