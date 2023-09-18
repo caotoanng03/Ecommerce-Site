@@ -1,6 +1,7 @@
 extends ../../layouts/default.pug
 include ../../mixins/filter-status.pug
 include ../../mixins/search.pug
+include ../../mixins/pagination.pug
 
 block main
     h1(class="mb-4") #{pageTitle}
@@ -48,3 +49,6 @@ block main
                         td
                             button(class="btn btn-warning btn-sm") Edit
                             button(class="btn btn-danger btn-sm ml-1") Remove
+
+    
+    +pagination(pagination)
