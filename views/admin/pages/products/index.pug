@@ -76,6 +76,7 @@ block main
                                     button(
                                         class="btn btn-danger btn-sm ml-1"
                                         button-delete
+                                        data-id= item.id
                                     ) Remove
                     else 
                         tr  
@@ -89,6 +90,12 @@ block main
         method="POST"
         action=""
         data-path=`/${prefixAdmin}/products/change-status`
+    )
+    form(
+        id="form-delete-item"
+        method="POST"
+        action=""
+        data-path=`/${prefixAdmin}/products/delete`
     )
     
     +pagination(pagination)

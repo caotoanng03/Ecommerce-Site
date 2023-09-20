@@ -78,3 +78,12 @@ module.exports.changeMultiStatus = async (req, res) => {
 
     res.redirect('back');
 };
+
+// [DELETE] /admin/products/delete
+module.exports.deleteItem = async (req, res) => {
+    const id = req.params.id;
+
+    await Product.deleteOne({ _id: id })
+
+    res.redirect('back');
+};

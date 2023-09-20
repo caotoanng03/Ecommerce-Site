@@ -120,7 +120,31 @@ if (formChangeMulti) {
         } else {
             alert("Please choose at least one item!")
         }
-
     })
 }
 // End Form Chage Multi Items
+
+// Delete Item
+const deleteButtons = document.querySelectorAll('[button-delete]');
+if (deleteButtons.length > 0) {
+    const formDeleteItem = document.querySelector('#form-delete-item');
+    const path = formDeleteItem.getAttribute('data-path');
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const deleteConfirm = confirm('Are you sure to delete?');
+
+            if (deleteConfirm) {
+                const id = button.getAttribute('data-id');
+
+                const action = path + `/${id}?_method=DELETE`;
+
+                // update action
+                formDeleteItem.action = action;
+
+                formDeleteItem.submit();
+            }
+        });
+    })
+}
+// End Delete Item
