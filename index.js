@@ -1,11 +1,15 @@
 const express = require('express');
+const methodOverride = require('method-override');
+const bodyParser = require('body-parser');
 const app = express();
 require("dotenv").config();
 const port = process.env.PORT;
 
 // Override [POST] method
-const methodOverride = require('method-override');
 app.use(methodOverride('_method'));
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
 
 // Config 
 const systemConfig = require('./config/system');

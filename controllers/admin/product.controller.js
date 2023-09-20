@@ -2,6 +2,7 @@ const Product = require("../../models/product.model");
 const filterStatusHelper = require("../../helpers/filterStatus");
 const searchHelper = require("../../helpers/search");
 const paginationHelper = require("../../helpers/pagination");
+const systemConfig = require("../../config/system");
 
 // [GET] /admin/products
 module.exports.index = async (req, res) => {
@@ -29,28 +30,41 @@ module.exports.index = async (req, res) => {
     const objectPagination = paginationHelper(initPagination, req.query, countProducts);
 
     // End Pagination
-    // console.log(countProducts);
     const products = await Product.find(findConditions)
         .limit(objectPagination.limitItems)
         .skip(objectPagination.skip)
 
-    // console.log(products);
-
-    res.render('admin/pages/products/index', {
-        pageTitle: "Product Catalog",
-        products: products,
-        filterStatus: filterStatus,
-        keyword: objectSearch.keyword,
-        pagination: objectPagination
-    });
+    if (products.length > 0) {
+        res.render('admin/pages/products/index', {
+            pageTitle: "Product Catalog",
+            products: products,
+            filterStatus: filterStatus,
+            keyword: objectSearch.keyword,
+            pagination: objectPagination
+        });
+    } else {
+        let queryStr = "";
+        for (let key in req.query) {
+            if (key !== 'page') {
+                queryStr += `&${key}=${req.query[key]}`
+            }
+        }
+        res.redirect(`/${systemConfig.prefixPathAdmin}/products?page=1${queryStr}`)
+    }
 }
 
 // [PATCH] /admin/products/change-status/:status/:id
 module.exports.changeStatus = async (req, res) => {
     const status = req.params.status;
     const id = req.params.id;
-
     await Product.updateOne({ _id: id }, { status: status });
 
     res.redirect('back');
+};
+
+// [PATCH] /admin/products/change-multi
+module.exports.changeMultiStatus = async (req, res) => {
+    console.log(req.body);
+
+    res.send("ok");
 };
