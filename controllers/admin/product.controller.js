@@ -83,7 +83,14 @@ module.exports.changeMultiStatus = async (req, res) => {
 module.exports.deleteItem = async (req, res) => {
     const id = req.params.id;
 
-    await Product.deleteOne({ _id: id })
+    // perminent Delete
+    // await Product.deleteOne({ _id: id })
+
+    // Temporary delete
+    await Product.updateOne({ _id: id }, {
+        deleted: true,
+        deletedAt: new Date()
+    });
 
     res.redirect('back');
 };
