@@ -60,6 +60,8 @@ module.exports.changeStatus = async (req, res) => {
     const id = req.params.id;
     await Product.updateOne({ _id: id }, { status: status });
 
+    req.flash("success", "Updated status successfully");
+
     res.redirect('back');
 };
 
@@ -72,6 +74,7 @@ module.exports.changeMultiStatus = async (req, res) => {
         case 'active':
         case 'inactive':
             await Product.updateMany({ _id: { $in: ids } }, { status: type });
+            req.flash('success', `Updated status ${ids.length} successfully`);
             break;
         case 'change-position':
             for (let item of ids) {
@@ -85,6 +88,7 @@ module.exports.changeMultiStatus = async (req, res) => {
                     deleted: true,
                     deletedAt: new Date()
                 });
+            req.flash('success', `Deleted ${ids.length} items successfully`);
             break;
         default:
             break;
@@ -105,6 +109,6 @@ module.exports.deleteItem = async (req, res) => {
         deleted: true,
         deletedAt: new Date()
     });
-
+    req.flash('success', 'Deleted successfully');
     res.redirect('back');
 };
