@@ -100,7 +100,7 @@ if (checkBoxMulti) {
 
 // End Change Box multi
 
-// Form Chage Multi Items
+// Form Change Multi Items
 const formChangeMulti = document.querySelector('[form-change-multi]');
 if (formChangeMulti) {
     formChangeMulti.addEventListener('submit', function (event) {
@@ -108,8 +108,18 @@ if (formChangeMulti) {
 
         const checkBoxMulti = document.querySelector('[checkbox-multi]');
         const checkedInputs = document.querySelectorAll('input[name=id]:checked');
+        // const typeChange = e.target.elements.type.value;
+        const option = formChangeMulti.querySelector('option:checked');
+        const optionValue = option.value;
 
         if (checkedInputs.length > 0) {
+            if (optionValue === "delete-all") {
+                const isOk = confirm("Are you sure to delete theses item?");
+                if (!isOk) {
+                    return;
+                }
+            }
+
             let ids = [];
             const inputIds = formChangeMulti.querySelector('input[name=ids]');
             checkedInputs.forEach(input => ids.push(input.value));
@@ -122,7 +132,7 @@ if (formChangeMulti) {
         }
     })
 }
-// End Form Chage Multi Items
+// End Form Change Multi Items
 
 // Delete Item
 const deleteButtons = document.querySelectorAll('[button-delete]');
