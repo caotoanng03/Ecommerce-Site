@@ -7,8 +7,9 @@ mixin change-multi(path)
         .d-flex.align-items-start 
             .form-group 
                 select(name="type" class="form-control")
-                    option(value="active") Active 
+                    option(value="active" selected) Active 
                     option(value="inactive") Inactive
+                    option(value="change-position") Change Position
                     option(value="delete-all") Remove
             .form-group 
                 input(

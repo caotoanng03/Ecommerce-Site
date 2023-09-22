@@ -110,10 +110,10 @@ if (formChangeMulti) {
         const checkedInputs = document.querySelectorAll('input[name=id]:checked');
         // const typeChange = e.target.elements.type.value;
         const option = formChangeMulti.querySelector('option:checked');
-        const optionValue = option.value;
+        const typeChange = option.value;
 
         if (checkedInputs.length > 0) {
-            if (optionValue === "delete-all") {
+            if (typeChange === "delete-all") {
                 const isOk = confirm("Are you sure to delete theses item?");
                 if (!isOk) {
                     return;
@@ -122,7 +122,13 @@ if (formChangeMulti) {
 
             let ids = [];
             const inputIds = formChangeMulti.querySelector('input[name=ids]');
-            checkedInputs.forEach(input => ids.push(input.value));
+            checkedInputs.forEach(input => {
+                if (typeChange === "change-position") {
+                    const pos = input.closest("tr").querySelector('input[name=position]').value;
+
+                    ids.push(`${input.value}-${pos}`);
+                } else ids.push(input.value)
+            });
 
             inputIds.value = ids.join(', ');
 

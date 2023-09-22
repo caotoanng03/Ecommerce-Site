@@ -31,6 +31,7 @@ module.exports.index = async (req, res) => {
 
     // End Pagination
     const products = await Product.find(findConditions)
+        .sort({ position: "desc" })
         .limit(objectPagination.limitItems)
         .skip(objectPagination.skip)
 
@@ -71,6 +72,12 @@ module.exports.changeMultiStatus = async (req, res) => {
         case 'active':
         case 'inactive':
             await Product.updateMany({ _id: { $in: ids } }, { status: type });
+            break;
+        case 'change-position':
+            for (let item of ids) {
+                const [id, pos] = item.split("-");
+                await Product.updateOne({ _id: id }, { position: pos });
+            }
             break;
         case 'delete-all':
             await Product.updateMany({ _id: { $in: ids } },
