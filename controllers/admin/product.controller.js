@@ -35,7 +35,7 @@ module.exports.index = async (req, res) => {
         .limit(objectPagination.limitItems)
         .skip(objectPagination.skip)
 
-    if (products.length > 0) {
+    if (products.length > 0 || countProducts == 0) {
         res.render('admin/pages/products/index', {
             pageTitle: "Product Catalog",
             products: products,
@@ -44,13 +44,13 @@ module.exports.index = async (req, res) => {
             pagination: objectPagination
         });
     } else {
-        let queryStr = "";
+        let queryString = "";
         for (let key in req.query) {
             if (key !== 'page') {
-                queryStr += `&${key}=${req.query[key]}`
+                queryString += `&${key}=${req.query[key]}`
             }
         }
-        res.redirect(`/${systemConfig.prefixPathAdmin}/products?page=1${queryStr}`)
+        res.redirect(`/${systemConfig.prefixPathAdmin}/products?page=1${queryString}`)
     }
 }
 
