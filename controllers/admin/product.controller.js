@@ -35,6 +35,7 @@ module.exports.index = async (req, res) => {
         .limit(objectPagination.limitItems)
         .skip(objectPagination.skip)
 
+    // Khi tìm khác trang 1 và xử lý nếu không có sản phẩm trong db
     if (products.length > 0 || countProducts == 0) {
         res.render('admin/pages/products/index', {
             pageTitle: "Product Catalog",
@@ -50,7 +51,8 @@ module.exports.index = async (req, res) => {
                 queryString += `&${key}=${req.query[key]}`
             }
         }
-        res.redirect(`/${systemConfig.prefixPathAdmin}/products?page=1${queryString}`)
+        const href = `/${systemConfig.prefixPathAdmin}/products?page=1${queryString}`
+        res.redirect(href);
     }
 }
 
@@ -111,4 +113,30 @@ module.exports.deleteItem = async (req, res) => {
     });
     req.flash('success', 'Deleted successfully');
     res.redirect('back');
+};
+
+// [GET] /admin/products/create
+module.exports.create = (req, res) => {
+    res.render("admin/pages/products/create", {
+        pageTitle: "Add new product"
+    });
+};
+
+// [POST] /admin/products/create
+module.exports.createPost = async (req, res) => {
+    req.body.price = parseInt(req.body.price);
+    req.body.discountPercentage = parseInt(req.body.discountPercentage);
+    req.body.stock = parseInt(req.body.stock);
+
+    if (req.body.position == "") {
+        const numberOfAllProducts = await Product.countDocuments();
+        req.body.position = numberOfAllProducts + 1;
+    } else {
+        req.body.position = parseInt(req.body.position);
+    }
+
+    const newProduct = new Product(req.body);
+    await newProduct.save();
+
+    res.redirect(`/${systemConfig.prefixPathAdmin}/products`);
 };
