@@ -75,7 +75,6 @@ if (buttonsChangeStatus.length > 0) {
 
 // Change Box multi
 const checkBoxMulti = document.querySelector('[checkbox-multi]');
-
 if (checkBoxMulti) {
     const inputCheckAll = checkBoxMulti.querySelector('input[name=checkall]');
     const inputsId = checkBoxMulti.querySelectorAll('input[name=id]');
@@ -180,3 +179,18 @@ if (showAlert) {
     });
 };
 // End Show alert
+
+// Preview Upload Image
+const uploadImage = document.querySelector('[upload-image]');
+if (uploadImage) {
+    const uploadImageInput = uploadImage.querySelector('[upload-image-input]');
+    const uploadImagePreview = uploadImage.querySelector('[upload-image-preview]');
+
+    uploadImageInput.addEventListener('change', (e) => {
+        if (e.target.files.length) {
+            const image = URL.createObjectURL(e.target.files[0]);
+            uploadImagePreview.src = image;
+        }
+    });
+}
+// End Preview Upload Image

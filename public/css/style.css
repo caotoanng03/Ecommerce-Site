@@ -36,7 +36,7 @@
 /* END FOOTER */
 
 
-/* box-head */
+/* BOX-HEAD */
 .box-head {
     margin-bottom: 30px;
 }
@@ -48,9 +48,9 @@
     color: green;
 }
 
-/* End box-head */
+/* END BOX-HEAD */
 
-/* product-item */
+/* PRODUCT-ITEM */
 .product-item {
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -101,4 +101,4 @@
     border-radius: 8px;
 }
 
-/* End product-item */
+/* END PRODUCT-ITEM */
