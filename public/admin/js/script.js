@@ -96,7 +96,6 @@ if (checkBoxMulti) {
         });
     })
 }
-
 // End Change Box multi
 
 // Form Change Multi Items

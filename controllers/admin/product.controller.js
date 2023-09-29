@@ -90,7 +90,7 @@ module.exports.changeMultiStatus = async (req, res) => {
                     deleted: true,
                     deletedAt: new Date()
                 });
-            req.flash('success', `Deleted ${ids.length} items successfully`);
+            req.flash('success', `Deleted ${ids.length} products`);
             break;
         default:
             break;
@@ -111,7 +111,7 @@ module.exports.deleteItem = async (req, res) => {
         deleted: true,
         deletedAt: new Date()
     });
-    req.flash('success', 'Deleted successfully');
+    req.flash('success', '1 product deleted');
     res.redirect('back');
 };
 
@@ -140,6 +140,8 @@ module.exports.createPost = async (req, res) => {
 
     const newProduct = new Product(req.body);
     await newProduct.save();
+
+    req.flash('success', '1 product created');
 
     res.redirect(`/${systemConfig.prefixPathAdmin}/products`);
 };
