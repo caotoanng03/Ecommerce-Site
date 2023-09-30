@@ -18,3 +18,23 @@ module.exports.index = async (req, res) => {
         products: products
     });
 }
+
+// [GET] /admin/products/detail/:slug
+// slug is not primary key so if it's not exist -> null
+// if primary key (id) not exist -> error
+module.exports.detail = async (req, res) => {
+    const slug = req.params.slug;
+    const product = await Product.findOne({
+        slug: slug,
+        deleted: false,
+        status: 'active'
+    });
+    if (product != null) {
+        res.render("admin/pages/products/detail", {
+            product: product,
+            pageTitle: "Product Detail"
+        });
+    } else {
+        res.redirect('/');
+    }
+};
