@@ -60,11 +60,15 @@ module.exports.index = async (req, res) => {
 module.exports.changeStatus = async (req, res) => {
     const status = req.params.status;
     const id = req.params.id;
-    await Product.updateOne({ _id: id }, { status: status });
+    try {
+        await Product.updateOne({ _id: id }, { status: status });
 
-    req.flash("success", "Updated status successfully");
+        req.flash("success", "Updated status successfully");
 
-    res.redirect('back');
+        res.redirect('back');
+    } catch (error) {
+        res.redirect(`/${systemConfig.prefixAdmin}/products`);
+    }
 };
 
 // [PATCH] /admin/products/change-multi
@@ -150,34 +154,42 @@ module.exports.createPost = async (req, res) => {
 module.exports.edit = async (req, res) => {
     const id = req.params.id;
 
-    const product = await Product.findOne({
-        _id: id,
-        deleted: false
-    });
+    try {
+        const product = await Product.findOne({
+            _id: id,
+            deleted: false
+        });
 
-    res.render("admin/pages/products/edit", {
-        product: product,
-        pageTitle: "Edit Product"
-    });
+        res.render("admin/pages/products/edit", {
+            product: product,
+            pageTitle: "Edit Product"
+        });
+    } catch (error) {
+        res.redirect(`/${systemConfig.prefixPathAdmin}/products`);
+    }
 };
 
 // [PATCH] /admin/products/edit/:id
 module.exports.editPatch = async (req, res) => {
     const id = req.params.id;
 
-    req.body.price = parseInt(req.body.price);
-    req.body.discountPercentage = parseInt(req.body.discountPercentage);
-    req.body.stock = parseInt(req.body.stock);
-    req.body.position = parseInt(req.body.position);
+    try {
+        req.body.price = parseInt(req.body.price);
+        req.body.discountPercentage = parseInt(req.body.discountPercentage);
+        req.body.stock = parseInt(req.body.stock);
+        req.body.position = parseInt(req.body.position);
 
-    if (req.file && req.file.filename) {
-        req.body.thumbnail = `/uploads/${req.file.filename}`;
+        if (req.file && req.file.filename) {
+            req.body.thumbnail = `/uploads/${req.file.filename}`;
+        }
+
+        await Product.updateOne({ _id: id }, req.body);
+
+        req.flash('success', 'The product was updated');
+
+        res.redirect(`back`);
+    } catch (error) {
+        res.redirect(`/${systemConfig.prefixPathAdmin}/products`);
     }
-
-    await Product.updateOne({ _id: id }, req.body);
-
-    req.flash('success', 'The product was updated');
-
-    res.redirect(`back`);
 
 };
