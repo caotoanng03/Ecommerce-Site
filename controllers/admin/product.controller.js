@@ -63,7 +63,7 @@ module.exports.changeStatus = async (req, res) => {
         const id = req.params.id;
         await Product.updateOne({ _id: id }, { status: status });
 
-        req.flash("success", "Updated status successfully");
+        req.flash("success", "Status updated");
 
         res.redirect('back');
     } catch (error) {
@@ -80,7 +80,7 @@ module.exports.changeMultiStatus = async (req, res) => {
         case 'active':
         case 'inactive':
             await Product.updateMany({ _id: { $in: ids } }, { status: type });
-            req.flash('success', `Updated status ${ids.length} successfully`);
+            req.flash('success', `Updated ${ids.length} products status`);
             break;
         case 'change-position':
             for (let item of ids) {

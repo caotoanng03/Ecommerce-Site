@@ -25,10 +25,10 @@ const routeClient = require('./routes/client/index.route');
 const routeAdmin = require('./routes/admin/index.route');
 
 // Static files
-app.use(express.static('public'));
+app.use(express.static(`${__dirname}/public`));
 
 // Views 
-app.set('views', './views');
+app.set('views', `${__dirname}/views`);
 app.set('view engine', 'pug');
 
 // Flash
