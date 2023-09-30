@@ -58,9 +58,9 @@ module.exports.index = async (req, res) => {
 
 // [PATCH] /admin/products/change-status/:status/:id
 module.exports.changeStatus = async (req, res) => {
-    const status = req.params.status;
-    const id = req.params.id;
     try {
+        const status = req.params.status;
+        const id = req.params.id;
         await Product.updateOne({ _id: id }, { status: status });
 
         req.flash("success", "Updated status successfully");
@@ -152,9 +152,8 @@ module.exports.createPost = async (req, res) => {
 
 // [GET] /admin/products/edit/:id
 module.exports.edit = async (req, res) => {
-    const id = req.params.id;
-
     try {
+        const id = req.params.id;
         const product = await Product.findOne({
             _id: id,
             deleted: false
@@ -171,9 +170,8 @@ module.exports.edit = async (req, res) => {
 
 // [PATCH] /admin/products/edit/:id
 module.exports.editPatch = async (req, res) => {
-    const id = req.params.id;
-
     try {
+        const id = req.params.id;
         req.body.price = parseInt(req.body.price);
         req.body.discountPercentage = parseInt(req.body.discountPercentage);
         req.body.stock = parseInt(req.body.stock);
@@ -192,4 +190,22 @@ module.exports.editPatch = async (req, res) => {
         res.redirect(`/${systemConfig.prefixPathAdmin}/products`);
     }
 
+};
+
+// [GET] /admin/products/detail/:id
+module.exports.detail = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const product = await Product.findOne({
+            _id: id,
+            deleted: false
+        });
+
+        res.render("admin/pages/products/detail", {
+            product: product,
+            pageTitle: "Detail"
+        });
+    } catch (error) {
+        res.redirect(`/${systemConfig.prefixPathAdmin}/products`);
+    }
 };
