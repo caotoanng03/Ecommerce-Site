@@ -38,7 +38,7 @@ module.exports.index = async (req, res) => {
     // Khi tìm khác trang 1 và xử lý nếu không có sản phẩm trong db
     if (products.length > 0 || countProducts == 0) {
         res.render('admin/pages/products/index', {
-            pageTitle: "Product Catalog",
+            pageTitle: "Product List",
             products: products,
             filterStatus: filterStatus,
             keyword: objectSearch.keyword,
@@ -144,4 +144,40 @@ module.exports.createPost = async (req, res) => {
     req.flash('success', '1 product created');
 
     res.redirect(`/${systemConfig.prefixPathAdmin}/products`);
+};
+
+// [GET] /admin/products/edit/:id
+module.exports.edit = async (req, res) => {
+    const id = req.params.id;
+
+    const product = await Product.findOne({
+        _id: id,
+        deleted: false
+    });
+
+    res.render("admin/pages/products/edit", {
+        product: product,
+        pageTitle: "Edit Product"
+    });
+};
+
+// [PATCH] /admin/products/edit/:id
+module.exports.editPatch = async (req, res) => {
+    const id = req.params.id;
+
+    req.body.price = parseInt(req.body.price);
+    req.body.discountPercentage = parseInt(req.body.discountPercentage);
+    req.body.stock = parseInt(req.body.stock);
+    req.body.position = parseInt(req.body.position);
+
+    if (req.file && req.file.filename) {
+        req.body.thumbnail = `/uploads/${req.file.filename}`;
+    }
+
+    await Product.updateOne({ _id: id }, req.body);
+
+    req.flash('success', 'The product was updated');
+
+    res.redirect(`back`);
+
 };
