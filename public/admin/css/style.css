@@ -137,3 +137,17 @@ a {
 }
 
 /* END IMAGE PREVIEW */
+
+/* SORT SELECTION */
+.sort-container {
+    display: flex;
+    align-items: baseline;
+}
+
+.sort-container [sort-select] {
+    flex: 1;
+    border-radius: 0;
+    margin-right: 2px;
+}
+
+/* END SORT SELECTION */
