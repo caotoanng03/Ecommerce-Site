@@ -3,13 +3,14 @@ const router = express.Router();
 const multer = require('multer')
 
 // upload images
-const storageMulterHelper = require('../../helpers/storageMulter');
-const storage = storageMulterHelper(multer);
-const upload = multer({ storage: storage });
+// const storageMulterHelper = require('../../helpers/storageMulter');
+// const storage = storageMulterHelper(multer);
+const upload = multer();
+
 // validates
 const validate = require('../../validates/admin/product.validate');
-
-const controller = require("../../controllers/admin/product.controller");
+const controller = require('../../controllers/admin/product.controller');
+const uploadCloud = require('../../middlewares/admin/uploadCloud.middleware')
 
 router.get('/', controller.index);
 
@@ -21,16 +22,20 @@ router.delete('/delete/:id', controller.deleteItem);
 
 router.get('/create', controller.create);
 
-router.post('/create',
+router.post(
+    '/create',
     upload.single('thumbnail'),
+    uploadCloud.upload,
     validate.createPost,
     controller.createPost
 );
 
 router.get('/edit/:id', controller.edit);
 
-router.patch('/edit/:id',
+router.patch(
+    '/edit/:id',
     upload.single('thumbnail'),
+    uploadCloud.upload,
     validate.createPost,
     controller.editPatch
 );
