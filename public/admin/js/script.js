@@ -55,6 +55,7 @@ if (buttonsPagination.length > 0) {
 // Change Status 1 Item
 const buttonsChangeStatus = document.querySelectorAll('[button-change-status]');
 if (buttonsChangeStatus.length > 0) {
+
     const changeStatusForm = document.querySelector('#form-change-status');
     const path = changeStatusForm.getAttribute('data-path');
 
