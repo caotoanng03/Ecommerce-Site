@@ -48,3 +48,39 @@ module.exports.createPost = async (req, res) => {
 
     res.redirect(`/${systemConfig.prefixPathAdmin}/products-category`);
 };
+
+// [GET] /admin/products-category/edit/:id
+module.exports.edit = async (req, res) => {
+    const id = req.params.id;
+    let data = await ProductCategory.findOne({
+        _id: id,
+        deleted: false
+    });
+
+    const records = await ProductCategory.find({
+        deleted: false
+    });
+
+    const newRecords = createTree(records);
+
+    res.render("admin/pages/products-category/edit", {
+        pageTitle: "Edit Product Category",
+        data: data,
+        records: newRecords
+    });
+}
+
+// [PATCH] /admin/products-category/edit/:id
+module.exports.editPatch = async (req, res) => {
+    if (req.body.position === "") {
+        const countRecords = await ProductCategory.countDocuments();
+        req.body.position = countRecords + 1;
+    } else {
+        req.body.position = parseInt(req.body.position);
+    }
+
+    const record = new ProductCategory(req.body);
+    await record.save();
+
+    res.redirect(`/${systemConfig.prefixPathAdmin}/products-category`);
+};

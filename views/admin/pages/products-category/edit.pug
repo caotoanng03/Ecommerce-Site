@@ -5,11 +5,10 @@ include ../../mixins/select-tree.pug
 block main
     h1(class="mb-4") #{pageTitle}
 
-    +alert-success(3000)
     +alert-error(5000)
 
     form(
-        action=`/${prefixAdmin}/products-category/create`
+        action=`/${prefixAdmin}/products-category/edit/${data.id}?_method=PATCH`
         method="POST"
         enctype="multipart/form-data"
     )
@@ -21,6 +20,7 @@ block main
                 id="title"
                 name="title"
                 required
+                value=data.title
             )
         div(class="form-group")
             label(for="parent_id") Base Category
@@ -29,8 +29,8 @@ block main
                 id="parent_id"
                 class="form-control"
             )
-                option(value="") -- Choose base category --
-                +select-tree(records)
+                option(value="") -- Choose Base Category --
+                +select-tree(records, 1, data.parent_id)
 
         div(class="form-group")
             label(for="desc") Description
@@ -41,7 +41,7 @@ block main
                 name="description"
                 rows="5"
                 textarea-mce
-            )
+            ) #{data.description}
         div(
             class="form-group"
             upload-image
@@ -56,7 +56,7 @@ block main
                 upload-image-input
             )
             img(
-                src=""
+                src=data.thumbnail
                 class="image-preview"
                 upload-image-preview
             )
@@ -69,6 +69,7 @@ block main
                 name="position"
                 placeholder="Auto Increment"
                 min="1"
+                value=data.position
             )
         div(class="form-group form-check form-check-inline")
             input(
@@ -77,7 +78,7 @@ block main
                 id="statusActive"
                 name="status"
                 value="active"
-                checked
+                checked=(data.status == "active" ? true : false)
             )
             label(for="statusActive" class="form-check-label") Active
         div(class="form-group form-check form-check-inline")
@@ -87,10 +88,11 @@ block main
                 id="statusInActive"
                 name="status"
                 value="inactive"
+                checked=(data.status == "inactive" ? true : false)
             )
             label(for="statusInActive" class="form-check-label") Inactive
         div(class="form-group")
             button(
                 type="submit"
                 class="btn btn-primary"
-            ) Add
+            ) Apply
