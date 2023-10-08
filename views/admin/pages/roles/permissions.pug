@@ -1,0 +1,57 @@
+extends ../../layouts/default.pug
+include ../../mixins/alert.pug
+include ../../mixins/permission-grid.pug
+
+block main
+    +alert-success(5000)
+    +alert-error(5000)
+
+    h1(class="mb-4") #{pageTitle}
+
+    div(class="text-right")
+        button(
+            type="submit"
+            class="btn btn-primary mb-3"
+            button-submit
+        ) Apply
+
+    div(data-records=records)
+
+    table(
+        class="table table-hover table-sm"
+        table-permissions
+    )
+        thead
+            tr
+                th Feature
+                each item in records
+                    th(class="text-center") #{item.title}
+        tbody
+            tr(data-name="id" class="d-none")
+                td
+                each item in records
+                    td(class="text-center")
+                        input(type="text" value=item.id)
+            +permission-grid('Product', 'products')
+            +permission-grid('Product Category', 'products-category')
+            +permission-grid('Role Group', 'role-group')
+            tr(data-name="roles_permissions")
+                td Access Control
+                each item in records
+                    td(class="text-center")
+                        input(type="checkbox")
+
+    form(
+        id="form-change-permissions"
+        method="POST"
+        action=`/${prefixAdmin}/roles/permissions?_method=PATCH`
+        class="d-none"
+    )
+        div(class="form-group")
+            input(
+                type="text"
+                class="form-control"
+                name="permissions"
+            )
+
+    script(src="/admin/js/role.js") 
