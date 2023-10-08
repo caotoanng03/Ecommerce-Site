@@ -1,5 +1,5 @@
 const ProductCategory = require('../../models/product-category.model');
-const systemConfig = require("../../config/system");
+const systemConfig = require('../../config/system');
 const createTree = require('../../helpers/createTree');
 
 // [GET] /admin/products-category
@@ -44,7 +44,6 @@ module.exports.createPost = async (req, res) => {
 
     const record = new ProductCategory(req.body);
     await record.save();
-    // req.flash('success', 'Added 1 category');
 
     res.redirect(`/${systemConfig.prefixPathAdmin}/products-category`);
 };
@@ -72,15 +71,10 @@ module.exports.edit = async (req, res) => {
 
 // [PATCH] /admin/products-category/edit/:id
 module.exports.editPatch = async (req, res) => {
-    if (req.body.position === "") {
-        const countRecords = await ProductCategory.countDocuments();
-        req.body.position = countRecords + 1;
-    } else {
-        req.body.position = parseInt(req.body.position);
-    }
+    const id = req.params.id;
+    req.body.position = parseInt(req.body.position);
 
-    const record = new ProductCategory(req.body);
-    await record.save();
+    await ProductCategory.updateOne({ _id: id }, req.body);
 
-    res.redirect(`/${systemConfig.prefixPathAdmin}/products-category`);
+    res.redirect(`back`);
 };
