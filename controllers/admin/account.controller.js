@@ -5,73 +5,103 @@ const systemConfig = require('../../config/system');
 
 // [GET] /admin/accounts
 module.exports.index = async (req, res) => {
-    const records = await Account.find({
-        deleted: false
-    })
+    const permissions = res.locals.role.permissions;
 
-    for (const record of records) {
-        const role = await Role.findOne({ _id: record.role_id });
-        record.role = role;
+    if (permissions.includes('accounts_view')) {
+        const records = await Account.find({
+            deleted: false
+        })
+
+        for (const record of records) {
+            const role = await Role.findOne({ _id: record.role_id });
+            record.role = role;
+        }
+
+        res.render('admin/pages/accounts/index', {
+            pageTitle: 'Account',
+            records: records
+        })
+    } else {
+        res.send('you have no right to VIEW accounts page');
     }
-
-    res.render('admin/pages/accounts/index', {
-        pageTitle: 'Account',
-        records: records
-    })
 };
 
 // [GET] /admin/accounts/create
 module.exports.create = async (req, res) => {
-    const roles = await Role.find({ deleted: false });
+    const permissions = res.locals.role.permissions;
 
-    res.render('admin/pages/accounts/create', {
-        pageTitle: 'New Account',
-        roles: roles
-    })
+    if (permissions.includes('accounts_create')) {
+        const roles = await Role.find({ deleted: false });
+
+        res.render('admin/pages/accounts/create', {
+            pageTitle: 'New Account',
+            roles: roles
+        })
+    } else {
+        res.send('you have no right to CREATE new account');
+    }
 };
 
 // [POST] /admin/accounts/create
 module.exports.createPost = async (req, res) => {
-    req.body.password = md5(req.body.password);
+    const permissions = res.locals.role.permissions;
 
-    const account = new Account(req.body);
-    account.save();
+    if (permissions.includes('accounts_create')) {
+        req.body.password = md5(req.body.password);
 
-    res.redirect(`/${systemConfig.prefixPathAdmin}/accounts`);
+        const account = new Account(req.body);
+        account.save();
+
+        res.redirect(`/${systemConfig.prefixPathAdmin}/accounts`);
+    } else {
+        res.send('you have no right to CREATE new account');
+    }
 }
 
 // [GET] /admin/accounts/edit/:id
 module.exports.edit = async (req, res) => {
-    try {
-        const roles = await Role.find({ deleted: false });
+    const permissions = res.locals.role.permissions;
 
-        const account = await Account.findOne({
-            _id: req.params.id,
-            deleted: false
-        })
+    if (permissions.includes('accounts_edit')) {
+        try {
+            const roles = await Role.find({ deleted: false });
 
-        res.render('admin/pages/accounts/edit', {
-            pageTitle: 'Edit Account',
-            roles: roles,
-            account: account
-        })
-    } catch (error) {
-        res.redirect(`/${systemConfig.prefixPathAdmin}/accounts`);
+            const account = await Account.findOne({
+                _id: req.params.id,
+                deleted: false
+            })
+
+            res.render('admin/pages/accounts/edit', {
+                pageTitle: 'Edit Account',
+                roles: roles,
+                account: account
+            })
+        } catch (error) {
+            res.redirect(`/${systemConfig.prefixPathAdmin}/accounts`);
+        }
+    } else {
+        res.send('you have no right to EDIT account');
     }
 };
 
 // [PATCH] /admin/accounts/edit:id
 module.exports.editPatch = async (req, res) => {
-    const id = req.params.id;
+    const permissions = res.locals.role.permissions;
 
-    if (req.body.password) {
-        req.body.password = md5(req.body.password);
+    if (permissions.includes('accounts_edit')) {
+        const id = req.params.id;
+
+        if (req.body.password) {
+            req.body.password = md5(req.body.password);
+        } else {
+            delete req.body.password;
+        }
+
+        await Account.updateOne({ _id: id }, req.body);
+        req.flash('success', 'This account was updated');
+        res.redirect('back');
+
     } else {
-        delete req.body.password;
+        res.send('you have no right to EDIT account');
     }
-
-    await Account.updateOne({ _id: id }, req.body);
-
-    req.flash('success', 'This account was updated');
-    res.redirect('back');
 };

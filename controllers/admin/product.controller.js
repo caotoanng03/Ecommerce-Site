@@ -8,231 +8,278 @@ const createTree = require("../../helpers/createTree");
 
 // [GET] /admin/products
 module.exports.index = async (req, res) => {
-    const filterStatus = filterStatusHelper(req.query);
-    let objectSearch = searchHelper(req.query);
+    const permissions = res.locals.role.permissions;
 
-    let findConditions = {
-        deleted: false
-    };
+    if (permissions.includes('products_view')) {
+        const filterStatus = filterStatusHelper(req.query);
+        let objectSearch = searchHelper(req.query);
 
-    if (req.query.status) {
-        findConditions.status = req.query.status;
-    }
+        let findConditions = {
+            deleted: false
+        };
 
-    if (req.query.keyword) {
-        findConditions.title = objectSearch.regex;
-    }
-
-    // Pagination
-    let initPagination = {
-        currentPage: 1,
-        limitItems: 4
-    };
-    const countProducts = await Product.count(findConditions);
-    const objectPagination = paginationHelper(initPagination, req.query, countProducts);
-
-    // End Pagination
-
-    // Sort
-    let sort = {};
-    if (req.query.sortKey && req.query.sortValue) {
-        sort[req.query.sortKey] = req.query.sortValue;
-    } else {
-        sort.position = "desc";
-    }
-    // End Sort
-    const products = await Product.find(findConditions)
-        .sort(sort)
-        .limit(objectPagination.limitItems)
-        .skip(objectPagination.skip)
-
-    // Khi tìm khác trang 1 và xử lý nếu không có sản phẩm trong db
-    if (products.length > 0 || countProducts == 0) {
-        res.render('admin/pages/products/index', {
-            pageTitle: "Product List",
-            products: products,
-            filterStatus: filterStatus,
-            keyword: objectSearch.keyword,
-            pagination: objectPagination
-        });
-    } else {
-        let queryString = "";
-        for (let key in req.query) {
-            if (key !== 'page') {
-                queryString += `&${key}=${req.query[key]}`
-            }
+        if (req.query.status) {
+            findConditions.status = req.query.status;
         }
-        const href = `/${systemConfig.prefixPathAdmin}/products?page=1${queryString}`
-        res.redirect(href);
+
+        if (req.query.keyword) {
+            findConditions.title = objectSearch.regex;
+        }
+
+        // Pagination
+        let initPagination = {
+            currentPage: 1,
+            limitItems: 4
+        };
+        const countProducts = await Product.count(findConditions);
+        const objectPagination = paginationHelper(initPagination, req.query, countProducts);
+
+        // End Pagination
+
+        // Sort
+        let sort = {};
+        if (req.query.sortKey && req.query.sortValue) {
+            sort[req.query.sortKey] = req.query.sortValue;
+        } else {
+            sort.position = "desc";
+        }
+        // End Sort
+        const products = await Product.find(findConditions)
+            .sort(sort)
+            .limit(objectPagination.limitItems)
+            .skip(objectPagination.skip)
+
+        // Khi tìm khác trang 1 và xử lý nếu không có sản phẩm trong db
+        if (products.length > 0 || countProducts == 0) {
+            res.render('admin/pages/products/index', {
+                pageTitle: "Product List",
+                products: products,
+                filterStatus: filterStatus,
+                keyword: objectSearch.keyword,
+                pagination: objectPagination
+            });
+        } else {
+            let queryString = "";
+            for (let key in req.query) {
+                if (key !== 'page') {
+                    queryString += `&${key}=${req.query[key]}`
+                }
+            }
+            const href = `/${systemConfig.prefixPathAdmin}/products?page=1${queryString}`
+            res.redirect(href);
+        }
+    } else {
+        res.send('You have no right to VIEW')
     }
+
 }
 
 // [PATCH] /admin/products/change-status/:status/:id
 module.exports.changeStatus = async (req, res) => {
-    try {
-        const status = req.params.status;
-        const id = req.params.id;
-        await Product.updateOne({ _id: id }, { status: status });
+    const permissions = res.locals.role.permissions;
+    if (permissions.includes('products_edit')) {
+        try {
+            const status = req.params.status;
+            const id = req.params.id;
+            await Product.updateOne({ _id: id }, { status: status });
 
-        req.flash("success", "Status updated");
+            req.flash("success", "Status updated");
 
-        res.redirect('back');
-    } catch (error) {
-        res.redirect(`/${systemConfig.prefixAdmin}/products`);
+            res.redirect('back');
+        } catch (error) {
+            res.redirect(`/${systemConfig.prefixAdmin}/products`);
+        }
+    } else {
+        res.send('you have no right to EDIT')
     }
 };
 
 // [PATCH] /admin/products/change-multi
 module.exports.changeMultiStatus = async (req, res) => {
-    const type = req.body.type;
-    const ids = req.body.ids.split(', ');
+    const permissions = res.locals.role.permissions;
+    if (permissions.includes('products_edit')) {
+        const type = req.body.type;
+        const ids = req.body.ids.split(', ');
 
-    switch (type) {
-        case 'active':
-        case 'inactive':
-            await Product.updateMany({ _id: { $in: ids } }, { status: type });
-            req.flash('success', `Updated ${ids.length} products status`);
-            break;
-        case 'change-position':
-            for (let item of ids) {
-                const [id, pos] = item.split("-");
-                await Product.updateOne({ _id: id }, { position: pos });
-            }
-            break;
-        case 'delete-all':
-            await Product.updateMany({ _id: { $in: ids } },
-                {
-                    deleted: true,
-                    deletedAt: new Date()
-                });
-            req.flash('success', `Deleted ${ids.length} products`);
-            break;
-        default:
-            break;
+        switch (type) {
+            case 'active':
+            case 'inactive':
+                await Product.updateMany({ _id: { $in: ids } }, { status: type });
+                req.flash('success', `Updated ${ids.length} products status`);
+                break;
+            case 'change-position':
+                for (let item of ids) {
+                    const [id, pos] = item.split("-");
+                    await Product.updateOne({ _id: id }, { position: pos });
+                }
+                break;
+            case 'delete-all':
+                await Product.updateMany({ _id: { $in: ids } },
+                    {
+                        deleted: true,
+                        deletedAt: new Date()
+                    });
+                req.flash('success', `Deleted ${ids.length} products`);
+                break;
+            default:
+                break;
+        }
+
+        res.redirect('back');
+    } else {
+        res.send('you have no right to EDIT')
     }
-
-    res.redirect('back');
 };
 
 // [DELETE] /admin/products/delete
 module.exports.deleteItem = async (req, res) => {
-    const id = req.params.id;
+    const permissions = res.locals.role.permissions;
+    if (permissions.includes('products_delete')) {
+        const id = req.params.id;
 
-    // perminent Delete
-    // await Product.deleteOne({ _id: id })
+        // perminent Delete
+        // await Product.deleteOne({ _id: id })
 
-    // Temporary delete
-    await Product.updateOne({ _id: id }, {
-        deleted: true,
-        deletedAt: new Date()
-    });
-    req.flash('success', '1 product deleted');
-    res.redirect('back');
+        // Temporary delete
+        await Product.updateOne({ _id: id }, {
+            deleted: true,
+            deletedAt: new Date()
+        });
+        req.flash('success', '1 product deleted');
+        res.redirect('back');
+    } else {
+        res.send('you have no right to DELETE');
+    }
 };
 
 // [GET] /admin/products/create
 module.exports.create = async (req, res) => {
-    let find = {
-        deleted: false
+    const permissions = res.locals.role.permissions;
+    if (permissions.includes('products_create')) {
+        let find = {
+            deleted: false
+        }
+
+        const records = await ProductCategory.find(find);
+
+        const newRecords = createTree(records);
+
+        res.render("admin/pages/products/create", {
+            pageTitle: "Add new product",
+            records: newRecords
+        });
+    } else {
+        res.send('you have no right to CREATE');
     }
-
-    const records = await ProductCategory.find(find);
-
-    const newRecords = createTree(records);
-
-    res.render("admin/pages/products/create", {
-        pageTitle: "Add new product",
-        records: newRecords
-    });
 };
 
 // [POST] /admin/products/create
 module.exports.createPost = async (req, res) => {
-    req.body.price = parseInt(req.body.price);
-    req.body.discountPercentage = parseInt(req.body.discountPercentage);
-    req.body.stock = parseInt(req.body.stock);
+    const permissions = res.locals.role.permissions;
+    if (permissions.includes('products_create')) {
+        req.body.price = parseInt(req.body.price);
+        req.body.discountPercentage = parseInt(req.body.discountPercentage);
+        req.body.stock = parseInt(req.body.stock);
 
-    if (req.body.position == "") {
-        const numberOfAllProducts = await Product.countDocuments();
-        req.body.position = numberOfAllProducts + 1;
+        if (req.body.position == "") {
+            const numberOfAllProducts = await Product.countDocuments();
+            req.body.position = numberOfAllProducts + 1;
+        } else {
+            req.body.position = parseInt(req.body.position);
+        }
+        // if (req.file && req.file.filename) {
+        //     req.body.thumbnail = `/uploads/${req.file.filename}`;
+        // }
+
+        const newProduct = new Product(req.body);
+        await newProduct.save();
+
+        req.flash('success', '1 product created');
+
+        res.redirect(`/${systemConfig.prefixPathAdmin}/products`);
     } else {
-        req.body.position = parseInt(req.body.position);
+        res.send('you have no right to CREATE')
     }
-    // if (req.file && req.file.filename) {
-    //     req.body.thumbnail = `/uploads/${req.file.filename}`;
-    // }
-
-    const newProduct = new Product(req.body);
-    await newProduct.save();
-
-    req.flash('success', '1 product created');
-
-    res.redirect(`/${systemConfig.prefixPathAdmin}/products`);
 };
 
 // [GET] /admin/products/edit/:id
 module.exports.edit = async (req, res) => {
-    try {
-        const id = req.params.id;
-        const product = await Product.findOne({
-            _id: id,
-            deleted: false
-        });
+    const permissions = res.locals.role.permissions;
+    if (permissions.includes('products_edit')) {
+        try {
+            const id = req.params.id;
+            const product = await Product.findOne({
+                _id: id,
+                deleted: false
+            });
 
-        const records = await ProductCategory.find({
-            deleted: false
-        });
+            const records = await ProductCategory.find({
+                deleted: false
+            });
 
-        const newRecords = createTree(records);
+            const newRecords = createTree(records);
 
-        res.render("admin/pages/products/edit", {
-            product: product,
-            records: newRecords,
-            pageTitle: "Edit Product"
-        });
-    } catch (error) {
-        res.redirect(`/${systemConfig.prefixPathAdmin}/products`);
+            res.render("admin/pages/products/edit", {
+                product: product,
+                records: newRecords,
+                pageTitle: "Edit Product"
+            });
+        } catch (error) {
+            res.redirect(`/${systemConfig.prefixPathAdmin}/products`);
+        }
+    } else {
+        res.send('you have no right to EDIT')
     }
 };
 
 // [PATCH] /admin/products/edit/:id
 module.exports.editPatch = async (req, res) => {
-    try {
-        const id = req.params.id;
-        req.body.price = parseInt(req.body.price);
-        req.body.discountPercentage = parseInt(req.body.discountPercentage);
-        req.body.stock = parseInt(req.body.stock);
-        req.body.position = parseInt(req.body.position);
+    const permissions = res.locals.role.permissions;
+    if (permissions.includes('products_edit')) {
+        try {
+            const id = req.params.id;
+            req.body.price = parseInt(req.body.price);
+            req.body.discountPercentage = parseInt(req.body.discountPercentage);
+            req.body.stock = parseInt(req.body.stock);
+            req.body.position = parseInt(req.body.position);
 
-        // if (req.file && req.file.filename) {
-        //     req.body.thumbnail = `/uploads/${req.file.filename}`;
-        // }
+            // if (req.file && req.file.filename) {
+            //     req.body.thumbnail = `/uploads/${req.file.filename}`;
+            // }
 
-        await Product.updateOne({ _id: id }, req.body);
+            await Product.updateOne({ _id: id }, req.body);
 
-        req.flash('success', 'The product was updated');
+            req.flash('success', 'The product was updated');
 
-        res.redirect(`back`);
-    } catch (error) {
-        res.redirect(`/${systemConfig.prefixPathAdmin}/products`);
+            res.redirect(`back`);
+        } catch (error) {
+            res.redirect(`/${systemConfig.prefixPathAdmin}/products`);
+        }
+    } else {
+        res.send('you have no right to EDIT');
     }
 
 };
 
 // [GET] /admin/products/detail/:id
 module.exports.detail = async (req, res) => {
-    try {
-        const id = req.params.id;
-        const product = await Product.findOne({
-            _id: id,
-            deleted: false
-        });
+    const permissions = res.locals.role.permissions;
+    if (permissions.includes('products_view')) {
+        try {
+            const id = req.params.id;
+            const product = await Product.findOne({
+                _id: id,
+                deleted: false
+            });
 
-        res.render("admin/pages/products/detail", {
-            product: product,
-            pageTitle: "Detail"
-        });
-    } catch (error) {
-        res.redirect(`/${systemConfig.prefixPathAdmin}/products`);
+            res.render("admin/pages/products/detail", {
+                product: product,
+                pageTitle: "Detail"
+            });
+        } catch (error) {
+            res.redirect(`/${systemConfig.prefixPathAdmin}/products`);
+        }
+    } else {
+        res.send('you have no right to view DETAIL')
     }
 };
