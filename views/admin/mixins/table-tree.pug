@@ -37,18 +37,21 @@ mixin table-tree(items, level = 1)
                         button-change-status
                     ) Inactive
             td
-                a(
-                    class="btn btn-secondary btn-sm"
-                    href=`/${prefixAdmin}/products-category/detail/${item.id}`
-                ) Detail
-                a(
-                    class="btn btn-warning btn-sm ml-1"
-                    href=`/${prefixAdmin}/products-category/edit/${item.id}`
-                ) Edit
-                button(
-                    class="btn btn-danger btn-sm ml-1"
-                    button-delete
-                    data-id=item.id
-                ) Delete
+                if(role.permissions.includes('products-category_view'))
+                    a(
+                        class="btn btn-secondary btn-sm"
+                        href=`/${prefixAdmin}/products-category/detail/${item.id}`
+                    ) Detail
+                if(role.permissions.includes('products-category_edit'))
+                    a(
+                        class="btn btn-warning btn-sm ml-1"
+                        href=`/${prefixAdmin}/products-category/edit/${item.id}`
+                    ) Edit
+                if(role.permissions.includes('products-category_delete'))
+                    button(
+                        class="btn btn-danger btn-sm ml-1"
+                        button-delete
+                        data-id=item.id
+                    ) Delete
         if item.children && item.children.length > 0
             +table-tree(item.children, level + 1)
