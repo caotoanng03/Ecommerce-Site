@@ -127,7 +127,10 @@ module.exports.changeMultiStatus = async (req, res) => {
                 await Product.updateMany({ _id: { $in: ids } },
                     {
                         deleted: true,
-                        deletedAt: new Date()
+                        deletedBy: {
+                            account_id: res.locals.user.id,
+                            deletedAt: new Date(),
+                        }
                     });
                 req.flash('success', `Deleted ${ids.length} products`);
                 break;
@@ -141,7 +144,7 @@ module.exports.changeMultiStatus = async (req, res) => {
     }
 };
 
-// [DELETE] /admin/products/delete
+// [PATCH] /admin/products/delete/:id
 module.exports.deleteItem = async (req, res) => {
     const permissions = res.locals.role.permissions;
     if (permissions.includes('products_delete')) {
@@ -153,7 +156,10 @@ module.exports.deleteItem = async (req, res) => {
         // Temporary delete
         await Product.updateOne({ _id: id }, {
             deleted: true,
-            deletedAt: new Date()
+            deletedBy: {
+                account_id: res.locals.user.id,
+                deletedAt: new Date(),
+            }
         });
         req.flash('success', '1 product deleted');
         res.redirect('back');
