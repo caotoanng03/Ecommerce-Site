@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const flash = require('express-flash');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const moment = require('moment');
 const path = require('path');
 const app = express();
 require("dotenv").config();
@@ -49,6 +50,7 @@ routeAdmin(app);
 
 // Global variables
 app.locals.prefixAdmin = systemConfig.prefixPathAdmin;
+app.locals.moment = moment;
 
 app.listen(port, () => {
     console.log(`App running on port ${port}`);

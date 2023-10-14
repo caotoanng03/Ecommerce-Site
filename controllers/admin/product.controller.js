@@ -1,5 +1,6 @@
 const Product = require("../../models/product.model");
 const ProductCategory = require("../../models/product-category.model");
+const Account = require("../../models/account.model");
 const filterStatusHelper = require("../../helpers/filterStatus");
 const searchHelper = require("../../helpers/search");
 const paginationHelper = require("../../helpers/pagination");
@@ -49,6 +50,15 @@ module.exports.index = async (req, res) => {
             .limit(objectPagination.limitItems)
             .skip(objectPagination.skip)
 
+        for (const product of products) {
+            const user = await Account.findOne({
+                _id: product.createdBy.account_id
+            });
+
+            if (user) {
+                product.createdBy.accountFullName = user.fullName;
+            }
+        }
         // Khi tìm khác trang 1 và xử lý nếu không có sản phẩm trong db
         if (products.length > 0 || countProducts == 0) {
             res.render('admin/pages/products/index', {
@@ -190,6 +200,10 @@ module.exports.createPost = async (req, res) => {
         // if (req.file && req.file.filename) {
         //     req.body.thumbnail = `/uploads/${req.file.filename}`;
         // }
+
+        req.body.createdBy = {
+            account_id: res.locals.user.id
+        }
 
         const newProduct = new Product(req.body);
         await newProduct.save();
