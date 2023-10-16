@@ -1,15 +1,20 @@
+include ../mixins/sub-menu.pug
+
 header.header
     .container 
         .row.align-items-center 
             .col-3 
                 .inner-logo 
                     a(href="/")
-                        img(src="/images/logo.svg", alt="Logo")
+                        img(src="/images/logo.svg" alt="Logo")
 
             .col-9
                 .inner-menu 
                     ul 
                         li
-                            a(href="/") Trang Chủ
-                        li 
-                            a(href="/products") Sản Phẩm
+                            a(href="/") Home
+                        li(class="sub-menu")
+                            - const pathProduct = "/products"
+                            a(href="/products") Product
+                            if(layoutCategoryProducts)
+                                +sub-menu(layoutCategoryProducts, pathProduct)
