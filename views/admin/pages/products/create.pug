@@ -31,6 +31,25 @@ block main
                 )
                     option(value="") -- Choose Category --
                     +select-tree(records)
+            div(class="form-group form-check form-check-inline")
+                input(
+                    type="radio"
+                    class="form-check-input"
+                    id="featured1"
+                    name="featured"
+                    value="1"
+                )
+                label(for="featured1" class="form-check-label") Outstanding
+            div(class="form-group form-check form-check-inline")
+                input(
+                    type="radio"
+                    class="form-check-input"
+                    id="featured0"
+                    name="featured"
+                    value="0"
+                    checked
+                )
+                label(for="featured0" class="form-check-label") No
             div(class="form-group")
                 label(for="desc") Description
                 textarea(
