@@ -96,13 +96,14 @@ module.exports.edit = async (req, res) => {
 // [PATCH] /admin/products-category/edit/:id
 module.exports.editPatch = async (req, res) => {
     const permissions = res.locals.role.permissions;
-    if (permissions.includes('products-category_view')) {
+    if (permissions.includes('products-category_edit')) {
         const id = req.params.id;
         req.body.position = parseInt(req.body.position);
 
         await ProductCategory.updateOne({ _id: id }, req.body);
 
-        res.redirect(`back`);
+        req.flash('success', 'Category Updated')
+        res.redirect('back');
     } else {
         res.send('you have no right to EDIT product category')
     }

@@ -5,7 +5,7 @@ include ../../mixins/select-tree.pug
 block main
     if(role.permissions.includes('products-category_edit'))
         h1(class="mb-4") #{pageTitle}
-
+        +alert-success(3000)
         +alert-error(5000)
 
         form(
