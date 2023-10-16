@@ -1,5 +1,6 @@
 extends ../../layouts/default.pug
 include ../../mixins/box-head.pug
+include ../../mixins/product-layout.pug
 
 block main 
     .container.my-3 
@@ -7,15 +8,4 @@ block main
             .col-12 
                 +box-head("Product List")
 
-        .row
-            each item in products 
-                .col-4.mb-3
-                    .product-item 
-                        .inner-image
-                            img(src=item.thumbnail, alt=item.title)
-                        .inner-content 
-                            h3.inner-title 
-                                a(href=`/products/detail/${item.slug}`) #{item.title}
-                            .inner-price-new #{item.newPrice}$
-                            .inner-old-new #{item.price}
-                            .inner-discount -#{item.discountPercentage}$
+        +product-grid(products)

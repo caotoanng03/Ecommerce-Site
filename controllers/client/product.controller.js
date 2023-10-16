@@ -1,4 +1,5 @@
 const Product = require('../../models/product.model');
+const productsHelper = require('../../helpers/newPrice.js');
 
 // [GET] /products
 module.exports.index = async (req, res) => {
@@ -7,15 +8,11 @@ module.exports.index = async (req, res) => {
         deleted: false
     }).sort({ position: "desc" });
 
-    const newProducts = products.map(item => {
-        item.newPrice = ((item.price * (100 - item.discountPercentage)) / 100).toFixed();
-        return item;
-    });
-
+    const newProducts = productsHelper.newPriceProducts(products);
 
     res.render('client/pages/products/index', {
         pageTitle: "Trang Sản Phẩm",
-        products: products
+        products: newProducts
     });
 }
 
@@ -30,7 +27,7 @@ module.exports.detail = async (req, res) => {
         status: 'active'
     });
     if (product != null) {
-        res.render("admin/pages/products/detail", {
+        res.render("client/pages/products/detail", {
             product: product,
             pageTitle: "Product Detail"
         });

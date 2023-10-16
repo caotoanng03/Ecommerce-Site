@@ -6,15 +6,15 @@ header.header
             .col-3 
                 .inner-logo 
                     a(href="/")
-                        img(src="/images/logo.svg" alt="Logo")
+                        h1(style="color:black") E-Commerce
 
             .col-9
                 .inner-menu 
                     ul 
                         li
-                            a(href="/") Home
+                            a(href="/" style="color:black") Home
                         li(class="sub-menu")
                             - const pathProduct = "/products"
-                            a(href="/products") Product
+                            a(href="/products" style="color:black") Product
                             if(layoutCategoryProducts)
                                 +sub-menu(layoutCategoryProducts, pathProduct)
