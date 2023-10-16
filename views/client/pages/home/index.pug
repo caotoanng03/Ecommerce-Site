@@ -4,9 +4,16 @@ include ../../mixins/product-layout.pug
 
 block main 
     .section-products-featured.my-5
-    .container
-        .row
-            .col-12
-                +box-head("Featured Products")
+        .container
+            .row
+                .col-12
+                    +box-head("Featured Products")
 
-        +product-grid(productsFeatured)
+            +product-grid(productsFeatured)
+    .section-products-new.my-5
+        .container
+            .row
+                .col-12
+                    +box-head("New Released Products")
+
+            +product-grid(newReleasedProducts)
