@@ -1,5 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&family=Noto+Serif:wght@400;500;600;700&display=swap');
+
 /* HEADER */
 .header {
+    font-family: 'Noto Serif', sans-serif;
     border-bottom: 1px solid #ddd;
     padding: 10px 0;
 }
@@ -27,6 +30,7 @@
 
 /* FOOTER */
 .footer {
+    font-family: 'Noto Serif', sans-serif;
     background: #333;
     color: #fff;
     text-align: center;
@@ -38,6 +42,7 @@
 
 /* BOX-HEAD */
 .box-head {
+    font-family: 'Noto Serif', sans-serif;
     margin-bottom: 30px;
 }
 
@@ -45,13 +50,14 @@
     margin-bottom: 0;
     font-size: 28px;
     font-weight: 600;
-    color: green;
+    color: #333;
 }
 
 /* END BOX-HEAD */
 
 /* PRODUCT-ITEM */
 .product-item {
+    font-family: 'Noto Sans', sans-serif;
     border: 1px solid #ddd;
     /* border-radius: 8px; */
     overflow: hidden;
@@ -95,16 +101,24 @@
     text-overflow: ellipsis;
 }
 
+.product-item .inner-content .inner-title a {
+    color: #333;
+}
+
+.product-item .inner-content .inner-title a:hover {
+    color: #5d5583;
+}
+
 .product-item .inner-content .inner-price-new {
     font-size: 18px;
     font-weight: 600;
-    color: green;
+    color: #7353BA;
 }
 
 .product-item .inner-content .inner-price-old {
     font-size: 18px;
     font-weight: 600;
-    color: red;
+    color: #333;
     text-decoration: line-through;
 }
 
@@ -112,7 +126,7 @@
     font-size: 14px;
     font-weight: 600;
     color: white;
-    background: red;
+    background: #CE5374;
     display: inline-block;
     padding: 3px 10px;
     /* border-radius: 8px; */
@@ -161,3 +175,62 @@
 }
 
 /* END SUB-MENU */
+
+
+/* PRODUCT-DETAIL */
+.product-detail .inner-thumb img {
+    width: 100%;
+    height: auto;
+}
+
+.product-detail .inner-title {
+    font-size: 32px;
+    margin-bottom: 15px;
+}
+
+.product-detail .inner-category {
+    margin-bottom: 10px;
+}
+
+.product-detail .inner-price-new {
+    color: green;
+    font-weight: 600;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.product-detail .inner-price-old {
+    color: red;
+    font-weight: 600;
+    font-size: 20px;
+    text-decoration: line-through;
+    margin-bottom: 10px;
+}
+
+.product-detail .inner-percent {
+    margin-bottom: 10px;
+}
+
+.product-detail .inner-percent span {
+    color: #fff;
+    background: red;
+    font-weight: 600;
+    display: inline-block;
+    padding: 3px 6px;
+    border-radius: 8px;
+}
+
+.product-detail .inner-stock {
+    margin-bottom: 10px;
+}
+
+.product-detail .inner-stock span {
+    color: #fff;
+    background: green;
+    font-weight: 600;
+    display: inline-block;
+    padding: 3px 6px;
+    border-radius: 8px;
+}
+
+/* END PRODUCT-DETAIL */

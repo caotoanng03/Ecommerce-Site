@@ -1,5 +1,5 @@
 const Product = require('../../models/product.model');
-const productsHelper = require('../../helpers/newPrice.js');
+const productsHelper = require('../../helpers/product.js');
 const ProductCategory = require('../../models/product-category.model');
 
 // [GET] /products
@@ -12,22 +12,35 @@ module.exports.index = async (req, res) => {
     const newProducts = productsHelper.newPriceProducts(products);
 
     res.render('client/pages/products/index', {
-        pageTitle: "Trang Sản Phẩm",
+        pageTitle: "Product",
         products: newProducts
     });
 }
 
-// [GET] /admin/products/detail/:slug
+// [GET] /products/detail/:slugProduct
 // slug is not primary key so if it's not exist -> null
 // if primary key (id) not exist -> error
 module.exports.detail = async (req, res) => {
-    const slug = req.params.slug;
+    const slug = req.params.slugProduct;
+
     const product = await Product.findOne({
         slug: slug,
         deleted: false,
         status: 'active'
     });
+
     if (product != null) {
+        if (product.product_category_id) {
+            const category = await ProductCategory.findOne({
+                _id: product.product_category_id,
+                deleted: false,
+                status: 'active'
+            })
+            product.category = category;
+        };
+
+        product.newPrice = productsHelper.newPriceProduct(product);
+
         res.render("client/pages/products/detail", {
             product: product,
             pageTitle: "Product Detail"
@@ -37,7 +50,7 @@ module.exports.detail = async (req, res) => {
     }
 };
 
-// [GET] /client/products/:slugCategory
+// [GET] /products/:slugCategory
 module.exports.category = async (req, res) => {
     const slugCategory = req.params.slugCategory;
 
