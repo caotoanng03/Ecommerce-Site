@@ -39,3 +39,6 @@ header.header
                             a(href="/products" style="color:black") Product
                             if(layoutCategoryProducts)
                                 +sub-menu(layoutCategoryProducts, pathProduct)
+                        li
+                            a(href="/cart") 
+                                <i class="fa-solid fa-cart-shopping fa-lg" style="color: #000000;"></i> (#{miniCart ? miniCart.totalQuantity : "0"})
