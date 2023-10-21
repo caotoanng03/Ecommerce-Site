@@ -19,3 +19,19 @@ module.exports.registerPost = (req, res, next) => {
 
     next();
 };
+
+module.exports.loginPost = (req, res, next) => {
+    if (!req.body.email) {
+        req.flash('error', 'Email can not be empty!');
+        res.redirect('back');
+        return;
+    }
+
+    if (!req.body.email) {
+        req.flash('error', 'Email can not be empty!');
+        res.redirect('back');
+        return;
+    }
+
+    next();
+};
