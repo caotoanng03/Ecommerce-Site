@@ -26,6 +26,10 @@
     margin-left: 20px;
 }
 
+.header .inner-menu li a {
+    color: #2b2b2b;
+}
+
 /* END HEADER */
 
 /* FOOTER */
@@ -148,7 +152,7 @@
     padding: 0;
     margin: 0;
     background: #eae9e9;
-    min-width: 180px;
+    min-width: 150px;
     display: none;
 }
 

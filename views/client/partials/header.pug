@@ -8,7 +8,7 @@ header.header
                     a(href="/")
                         h1(style="color:black") E-Commerce
 
-            .col-5
+            .col-4
                 form(
                     action="/search"
                     method="GET"
@@ -33,16 +33,20 @@ header.header
                 .inner-menu 
                     ul 
                         li
-                            a(href="/" style="color:black") Home
+                            a(href="/") Home
                         li(class="sub-menu")
                             - const pathProduct = "/products"
-                            a(href="/products" style="color:black") Product
+                            a(href="/products") Product
                             if(layoutCategoryProducts)
                                 +sub-menu(layoutCategoryProducts, pathProduct)
                         li
                             a(href="/cart") 
-                                <i class="fa-solid fa-cart-shopping fa-lg" style="color: #000000;"></i> (#{miniCart ? miniCart.totalQuantity : "0"})
-                        li 
-                            a(href="/user/login") Sign In
-                        li
-                            a(href="/user/register") Register
+                                <i class="fa-solid fa-cart-shopping fa-lg"></i> (#{miniCart ? miniCart.totalQuantity : "0"})
+                        if(user)
+                            li
+                                a(href="/user/logout") Sign out
+                        else    
+                            li 
+                                a(href="/user/login") Sign in
+                            li
+                                a(href="/user/register") Sign up
