@@ -10,28 +10,32 @@ module.exports.index = async (req, res) => {
     const cart = await Cart.findOne({
         _id: cartId
     })
+    try {
+        if (cart.products.length > 0) {
+            for (const item of cart.products) {
+                const productId = item.product_id;
 
-    if (cart.products.length > 0) {
-        for (const item of cart.products) {
-            const productId = item.product_id;
+                const productInfo = await Product.findOne({
+                    _id: productId
+                });
 
-            const productInfo = await Product.findOne({
-                _id: productId
-            });
+                productInfo.newPrice = productHelper.newPriceProduct(productInfo);
 
-            productInfo.newPrice = productHelper.newPriceProduct(productInfo);
-
-            item.productInfo = productInfo;
-            item.totalPrice = productInfo.newPrice * item.quantity;
+                item.productInfo = productInfo;
+                item.totalPrice = productInfo.newPrice * item.quantity;
+            }
         }
+
+        cart.totalPrice = cart.products.reduce((sum, item) => sum + item.totalPrice, 0);
+
+        res.render('client/pages/cart/index', {
+            pageTitle: 'Cart',
+            cartDetail: cart,
+        });
+    } catch (err) {
+        res.redirect('/')
     }
 
-    cart.totalPrice = cart.products.reduce((sum, item) => sum + item.totalPrice, 0);
-
-    res.render('client/pages/cart/index', {
-        pageTitle: 'Cart',
-        cartDetail: cart,
-    });
 };
 
 // [POST] /cart/add/:productId
