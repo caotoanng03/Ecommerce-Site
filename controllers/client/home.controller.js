@@ -14,10 +14,11 @@ module.exports.index = async (req, res) => {
     // Hết Hiển thị danh sách sản phẩm nổi bật
 
     // hiển thị danh sách sản phẩm mới nhất
-    const newReleasedProducts = await Product.find({
+    const releasedProducts = await Product.find({
         deleted: false,
         status: "active"
     }).sort({ position: "desc" }).limit(6);
+    const newReleasedProducts = productsHelper.newPriceProducts(releasedProducts);
     // hết hiển thị danh sách sản phẩm mới nhất
 
     res.render('client/pages/home/index', {

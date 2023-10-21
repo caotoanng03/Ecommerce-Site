@@ -76,9 +76,8 @@ block main
                                             src=item.thumbnail
                                             alt=item.title
                                             width="100px"
-                                            height="80px"
                                         )
-                                    td #{item.title}
+                                    td(style="width: 35%") #{item.title}
                                     td #{item.price}$
                                     td
                                         input(
@@ -114,6 +113,11 @@ block main
                                             div
                                                 +formatTime(item.updatedBy.slice(-1)[0].updatedAt)
                                     td
+                                        if(role.permissions.includes('products_view'))
+                                            a(
+                                                href=`/${prefixAdmin}/products/detail/${item.id}`
+                                                class="btn btn-secondary btn-sm"
+                                            ) Detail
                                         if(role.permissions.includes('products_edit'))
                                             a(
                                                 class="btn btn-warning btn-sm"
@@ -125,18 +129,13 @@ block main
                                                 button-delete
                                                 data-id= item.id
                                             ) Delete
-                                        if(role.permissions.includes('products_view'))
-                                            a(
-                                                href=`/${prefixAdmin}/products/detail/${item.id}`
-                                                class="btn btn-secondary btn-sm"
-                                            ) Chi tiết
                         else 
                             tr  
                                 td(
                                     colspan="7"
                                     class="text-center"
                                     style="color: red"
-                                ) Not Found
+                                ) None Products
 
         form(
             id="form-change-status"
