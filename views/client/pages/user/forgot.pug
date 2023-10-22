@@ -7,9 +7,9 @@ block main
     .container.my-5
         .row.justify-content-center
             .col-8
-                h1(class="text-center") Sign In
+                h1(class="text-center") Send code
                 form(
-                    action="/user/login"
+                    action="/user/password/forgot"
                     method="POST"
                 )
                     div(class="form-group")
@@ -22,17 +22,7 @@ block main
                             required
                         )
                     div(class="form-group")
-                        label(for="password") Password
-                        input(
-                            type="password"
-                            class="form-control"
-                            id="password"
-                            name="password"
-                            required
-                        )
-                    div(class="form-group")
                         button(
                             type="submit"
                             class="btn btn-primary btn-block"
-                        ) Sign In
-                a(href="/user/password/forgot") Forgot password?
+                        ) Send

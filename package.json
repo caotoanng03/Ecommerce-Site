@@ -24,6 +24,7 @@
     "mongoose": "^7.5.2",
     "mongoose-slug-updater": "^3.3.0",
     "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.7",
     "pug": "^3.0.2",
     "streamifier": "^0.1.1",
     "tinymce": "^6.7.0"
