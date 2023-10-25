@@ -182,5 +182,12 @@ module.exports.resetPasswordPost = async (req, res) => {
     }
 };
 
+// [GET] /user/info
+module.exports.info = async (req, res) => {
+
+    res.render('client/pages/user/info', {
+        pageTitle: 'User Profile'
+    });
+};
 
 

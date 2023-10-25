@@ -1,0 +1,17 @@
+extends ../../layouts/default.pug
+include ../../mixins/box-head.pug
+
+block main
+    .container.my-3
+        .row
+            .col-12
+                +box-head("Profile")
+
+        .container.my-4
+            .row.justify-content-center
+                .col-md-8
+                    .card
+                        .card-body
+                            .user-info
+                                p.mb-2 Name: #{user.fullName}
+                                p.mb-2 Email: #{user.email}
