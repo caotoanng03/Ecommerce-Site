@@ -1,2 +1,32 @@
 footer.footer
-    | Copyright&copy; CaoToan 2023
+    .footer-contact
+        .contact-item
+            strong Phone:
+            span= settingGeneral.phone
+
+        .contact-item
+            strong Email:
+            a(href="mailto:" + settingGeneral.email)= settingGeneral.email
+
+        .contact-item
+            strong Address:
+            | #{settingGeneral.address}
+
+        .footer-copyright
+            p
+                | ©
+                | #{settingGeneral.copyright}
+
+    .footer-socials
+        .socials-ins
+            strong Instagram:
+                a(href=settingGeneral.instagram)= settingGeneral.instagram
+        .socials-linkedin
+            strong Linkedin:
+                a(href=settingGeneral.linkedin)= settingGeneral.linkedin
+        .socials-facebook
+            strong Facebook:
+                a(href=settingGeneral.facebook)= settingGeneral.facebook
+
+
+    .footer-map !{settingGeneral.map}
