@@ -1,4 +1,5 @@
 const User = require('../../models/user.model');
+const Cart = require('../../models/cart.model');
 const ForgotPassword = require('../../models/forgot-password.model');
 const generateHelper = require('../../helpers/generate');
 const sendMailHelper = require('../../helpers/sendMail');
@@ -11,7 +12,7 @@ module.exports.register = async (req, res) => {
     });
 };
 
-// [GET] /user/register
+// [POST] /user/register
 module.exports.registerPost = async (req, res) => {
 
     const existsEmail = await User.findOne({
@@ -29,7 +30,15 @@ module.exports.registerPost = async (req, res) => {
     const user = new User(req.body);
     await user.save();
 
+    // The registerd user will take over the guest's cartId
+    await Cart.updateOne({
+        _id: req.cookies.cartId
+    }, {
+        user_id: user.id
+    });
+
     res.cookie('tokenUser', user.tokenUser);
+    res.clearCookie('cartId');
     res.redirect('/')
 };
 
@@ -72,6 +81,7 @@ module.exports.loginPost = async (req, res) => {
 // [GET] /user/logout
 module.exports.logout = async (req, res) => {
     res.clearCookie('tokenUser');
+
     res.redirect('/');
 }
 

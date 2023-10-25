@@ -1,4 +1,5 @@
 const Cart = require('../../models/cart.model');
+const User = require('../../models/user.model');
 const Product = require('../../models/product.model');
 
 const productHelper = require('../../helpers/product');
@@ -40,14 +41,19 @@ module.exports.index = async (req, res) => {
 
 // [POST] /cart/add/:productId
 module.exports.addPost = async (req, res) => {
-    const cartId = req.cookies.cartId;
+
     const productId = req.params.productId;
     const quantity = parseInt(req.body.quantity);
 
-    const cart = await Cart.findOne({
-        _id: cartId
-    });
+    let cart = {}
+    if (req.cookies.tokenUser) {
+        const user = await User.findOne({ tokenUser: req.cookies.tokenUser })
+        cart = await Cart.findOne({ user_id: user.id });
+    } else {
+        cart = await Cart.findOne({ _id: req.cookies.cartId });
+    }
 
+    const cartId = cart.id;
     const existProductsInCart = cart.products.find(elem => elem.product_id == productId);
 
     if (existProductsInCart) {
