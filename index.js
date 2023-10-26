@@ -47,6 +47,11 @@ app.use(
 // Routes
 routeClient(app);
 routeAdmin(app);
+app.get('*', (req, res) => {
+    res.render('client/pages/errors/404', {
+        pageTitle: '404 Not Found',
+    });
+});
 
 // Global variables
 app.locals.prefixAdmin = systemConfig.prefixPathAdmin;
