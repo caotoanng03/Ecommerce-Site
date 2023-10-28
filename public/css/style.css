@@ -397,6 +397,8 @@
 
 .chat .inner-body {
     padding: 10px;
+    max-height: 450px;
+    overflow: auto;
 }
 
 .chat .inner-body .inner-name {
