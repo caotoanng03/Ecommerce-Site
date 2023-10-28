@@ -7,6 +7,8 @@ const session = require('express-session');
 const moment = require('moment');
 const path = require('path');
 const app = express();
+const http = require('http');
+const { Server } = require('socket.io');
 require("dotenv").config();
 const port = process.env.PORT;
 
@@ -33,6 +35,13 @@ app.use(express.static(`${__dirname}/public`));
 app.set('views', `${__dirname}/views`);
 app.set('view engine', 'pug');
 
+// SocketIO
+const server = http.createServer(app);
+const io = new Server(server);
+io.on('connection', (socket) => {
+    console.log('a user connected ' + socket.id);
+});
+
 // Flash
 app.use(cookieParser('FATMANNNN'));
 app.use(session({ cookie: { maxAge: 60000 } }));
@@ -57,7 +66,7 @@ app.get('*', (req, res) => {
 app.locals.prefixAdmin = systemConfig.prefixPathAdmin;
 app.locals.moment = moment;
 
-app.listen(port, () => {
+server.listen(port, () => {
     console.log(`App running on port ${port}`);
 });
 
