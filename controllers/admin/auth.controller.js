@@ -4,9 +4,22 @@ const md5 = require('md5');
 
 // [GET] /admin/auth/login
 module.exports.login = async (req, res) => {
-    res.render('admin/pages/auth/login', {
-        pageTitle: 'Log In'
-    })
+    const token = req.cookies.token;
+    if (token) {
+        const account = await Account.findOne({
+            token: token,
+            deleted: false,
+            status: 'active'
+        });
+
+        if (account) {
+            res.redirect(`/${systemConfig.prefixPathAdmin}/dashboard`);
+        }
+    } else {
+        res.render('admin/pages/auth/login', {
+            pageTitle: 'Log In'
+        })
+    }
 };
 
 // [POST] /admin/auth/login
