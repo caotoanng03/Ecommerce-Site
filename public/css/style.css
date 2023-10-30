@@ -421,7 +421,7 @@
 }
 
 .chat .inner-foot {
-    background-color: #3d3c3c;
+    background-color: #eee;
     border-top: 1px solid #ddd;
     padding: 10px;
     /* border-radius: 0 0 8px 8px; */
@@ -453,3 +453,20 @@
 }
 
 /* END CHAT */
+
+/* ICON */
+emoji-picker {
+    height: 20rem;
+    width: 20rem;
+}
+
+.tooltip {
+    visibility: hidden;
+}
+
+.tooltip.shown {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* END ICON */

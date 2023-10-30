@@ -6,7 +6,9 @@ module.exports.index = async (req, res) => {
     const userId = res.locals.user.id;
     const fullName = res.locals.user.fullName;
 
-    // SocketIO (_io.on bị kết nối nhiều lần)
+    // SocketIO 
+
+    //_io.on bị kết nối nhiều lần
     _io.once('connection', (socket) => {
         socket.on('CLIENT_SEND_MESSAGE', async (content) => {
             // lưu vào database
