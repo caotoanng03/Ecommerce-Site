@@ -19,8 +19,13 @@ block main
                             div(class=(chat.user_id == user.id ? "inner-outgoing" : "inner-incoming"))
                                 if(chat.user_id != user.id)
                                     .inner-name #{chat.infoUser.fullName}
-                                .inner-content
-                                    | #{chat.content}
+                                if(chat.content)
+                                    .inner-content
+                                        | #{chat.content}
+                                if(chat.images)
+                                    .inner-images
+                                        each image in chat.images
+                                            img(src=image)
                         div(class="inner-list-typing")
                     .inner-foot
                         form(
@@ -32,6 +37,7 @@ block main
                                 placeholder="Enter..."
                                 name="content"
                             )
+                            div(class="custom-file-container" data-upload-id="upload-image")
                             span(class="button-icon btn btn-light mx-2") <i class="fa-regular fa-face-smile"></i>
                             button
                                 i.fa-solid.fa-paper-plane

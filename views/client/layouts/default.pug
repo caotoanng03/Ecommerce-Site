@@ -1,8 +1,15 @@
 doctype html 
 html 
     head
+    //- bootstrap
     link(rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css")
+
+    //- fontawesome
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    //- file-upload-with-preview
+    link(rel="stylesheet" href="https://unpkg.com/file-upload-with-preview/dist/style.css")
+
     link(rel="stylesheet" href="/css/style.css")
     title #{pageTitle}
 
@@ -19,8 +26,11 @@ html
         //- SocketIO
         script(src="/socket.io/socket.io.js")
         script(src="/js/socket.js")
+        //- emoij-picker
+        script(type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js")
+        //- file-upload-with-preview
+        script(src="https://unpkg.com/file-upload-with-preview/dist/file-upload-with-preview.iife.js")
 
-        <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
         script(type="module" src="/js/chat.js")
 
         script(src="/js/script.js")

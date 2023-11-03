@@ -1,21 +1,31 @@
 import * as Popper from 'https://cdn.jsdelivr.net/npm/@popperjs/core@^2/dist/esm/index.js'
 
+// FileUploadWithPreview
+const upload = new FileUploadWithPreview.FileUploadWithPreview("upload-image", {
+    multiple: true
+});
+// FileUploadWithPreview
+
 // CLIENT_SEND_MESSAGE
 const formSendData = document.querySelector(".chat .inner-form");
 if (formSendData) {
     formSendData.addEventListener('submit', (event) => {
         event.preventDefault();
         const content = event.target.content.value;
+        const images = upload.cachedFileArray || [];
 
-        if (content) {
-            socket.emit('CLIENT_SEND_MESSAGE', content);
+        if (content || images.length > 0) {
+            console.log(images);
+            socket.emit("CLIENT_SEND_MESSAGE", {
+                content: content,
+                images: images
+            });
             event.target.content.value = '';
+            upload.resetPreviewPanel();
             socket.emit('CLIENT_SEND_TYPING', 'hidden');
         }
     })
 }
-// END CLIENT_SEND_MESSAGE
-
 // SERVER_RETURN_MESSAGE
 socket.on('SERVER_RETURN_MESSAGE', (data) => {
     const myId = document.querySelector('[my-id]').getAttribute('my-id');
@@ -25,6 +35,9 @@ socket.on('SERVER_RETURN_MESSAGE', (data) => {
     const div = document.createElement('div');
 
     let htmlFullName = '';
+    let htmlContent = '';
+    let htmlImages = '';
+
     if (myId == data.userId) {
         div.classList.add('inner-outgoing')
     } else {
@@ -32,9 +45,22 @@ socket.on('SERVER_RETURN_MESSAGE', (data) => {
         htmlFullName = `<div class="inner-name">${data.fullName}</div>`;
     };
 
+    if (data.content) {
+        htmlContent = `<div class="inner-content">${data.content}</div>`;
+    };
+
+    if (data.images) {
+        htmlImages = `<div class="inner-images">`
+        for (const image of data.images) {
+            htmlImages += `<img src=${image}>`;
+        }
+        htmlImages += `</div>`;
+    };
+
     div.innerHTML = `
         ${htmlFullName}
-        <div class="inner-content">${data.content}</div>
+        ${htmlContent}
+        ${htmlImages}
     `;
 
     body.insertBefore(div, boxTyping);
@@ -58,7 +84,7 @@ const showTyping = () => {
 
     timeOut = setTimeout(() => {
         socket.emit("CLIENT_SEND_TYPING", "hidden");
-    }, 10000);
+    }, 3000);
 };
 // End show typing
 
@@ -79,10 +105,7 @@ if (buttonIcon) {
 
     buttonIcon.addEventListener('click', () => {
         tooltip.classList.toggle('shown');
-
-        if (!tooltip.classList.contains('shown')) {
-            setSelector(inputChat);
-        }
+        setSelector(inputChat);
     });
 };
 
@@ -99,10 +122,10 @@ if (emojiPicker) {
         showTyping();
     });
 
+
     inputChat.addEventListener("keyup", (event) => {
         const key = event.key;
         if (key == "Enter") {
-            console.log('go here');
             formSendData.submit();
         } else {
             showTyping();
@@ -116,7 +139,7 @@ const elementListTyping = document.querySelector(".chat .inner-list-typing");
 if (elementListTyping) {
     socket.on("SERVER_RETURN_TYPING", (data) => {
         if (data.type == "show") {
-            const existTyping = elementListTyping.querySelector(`[user-id="${data.userId}"]`);
+            const existTyping = elementListTyping.querySelector(`[user-id= "${data.userId}"]`);
 
             if (!existTyping) {
                 const bodyChat = document.querySelector(".chat .inner-body");
@@ -125,19 +148,19 @@ if (elementListTyping) {
                 boxTyping.setAttribute("user-id", data.userId);
 
                 boxTyping.innerHTML = `
-                    <div class="inner-name">${data.fullName}</div>
-                    <div class="inner-dots">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-                `;
+        < div class="inner-name" > ${data.fullName}</ >
+            <div class="inner-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+    `;
                 elementListTyping.appendChild(boxTyping);
                 bodyChat.scrollTop = bodyChat.scrollHeight;
             };
 
         } else {
-            const boxTypingRemove = elementListTyping.querySelector(`[user-id="${data.userId}"]`);
+            const boxTypingRemove = elementListTyping.querySelector(`[user-id= "${data.userId}"]`);
             if (boxTypingRemove) {
                 elementListTyping.removeChild(boxTypingRemove);
             };
