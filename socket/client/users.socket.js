@@ -2,7 +2,9 @@ const User = require("../../models/user.model");
 
 module.exports = async (res) => {
     _io.once('connection', (socket) => {
-        socket.on('CLIENT_REQUEST_FRIEND', async (targetFriendId) => {
+
+        // Người dùng gửi yêu cầu kết bạn
+        socket.on("CLIENT_REQUEST_FRIEND", async (targetFriendId) => {
             const myUserId = res.locals.user.id;
 
             // Thêm id của A vào acceptFriends của B
@@ -31,5 +33,23 @@ module.exports = async (res) => {
                 )
             };
         })
+
+        // Người dùng huỷ gửi yêu cầu kết bạn
+        socket.on("CLIENT_CANCEL_FRIEND", async (targetFriendId) => {
+            const myUserId = res.locals.user.id;
+
+            // Xoá thì không cần check id có tôn tại hay không
+            // Xoá id của A(myUserId) trong acceptFriends [của B](targetFriendId)
+            await User.updateOne(
+                { _id: targetFriendId },
+                { $pull: { acceptFriends: myUserId } }
+            )
+
+            // Xoá id của B(targetFriendId) trong requestFriends [của A](myUserId)
+            await User.updateOne(
+                { _id: myUserId },
+                { $pull: { requestFriends: targetFriendId } }
+            );
+        });
     })
 }

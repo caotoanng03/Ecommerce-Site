@@ -11,3 +11,17 @@ if (listBtnAddFriend.length > 0) {
     });
 };
 // Hết chức năng gửi yêu cầu kết bạn
+
+// Chức năng huỷ gửi yêu cầu kết bạn
+const listBtnCancelFriend = document.querySelectorAll("[btn-cancel-friend]");
+if (listBtnCancelFriend) {
+    listBtnCancelFriend.forEach((buttonCancelFriend) => {
+        buttonCancelFriend.addEventListener("click", () => {
+            buttonCancelFriend.closest(".box-user").classList.remove("add");
+            const targetFriendId = buttonCancelFriend.getAttribute("btn-cancel-friend");
+            console.log(targetFriendId)
+            socket.emit("CLIENT_CANCEL_FRIEND", targetFriendId);
+        });
+    });
+};
+// Hết chức năng huỷ gửi yêu cầu kết bạn 
