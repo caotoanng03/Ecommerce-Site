@@ -69,6 +69,52 @@ module.exports = async (res) => {
                 { _id: targetFriendId },
                 { $pull: { requestFriends: myUserId } }
             )
+        });
+
+        // Người dùng chấp nhận kết bạn
+        socket.on("CLIENT_CONFIRM_FRIEND", async (targetFriendId) => {
+            const myUserId = res.locals.user.id; // id cua B
+            // Thêm {targetFriendId, room_chat_id} của A vào friendlist của B
+            // Xoa Id cua A ra khoi acceptFriends cua B
+            const existAInB = await User.findOne({
+                _id: myUserId,
+                acceptFriends: targetFriendId
+            });
+            if (existAInB) {
+                await User.updateOne(
+                    { _id: myUserId },
+                    {
+                        $push: {
+                            friendList: {
+                                user_id: targetFriendId,
+                                room_chat_id: ""
+                            }
+                        },
+                        $pull: { acceptFriends: targetFriendId }
+                    }
+                )
+            }
+
+            // Thêm {user_id, room_chat_id} của B vào friendsList của A
+            // Xóa id của B trong requestFriends của A
+            const existBInA = await User.findOne({
+                _id: targetFriendId,
+                requestFriends: myUserId
+            });
+            if (existBInA) {
+                await User.updateOne(
+                    { _id: targetFriendId },
+                    {
+                        $push: {
+                            friendList: {
+                                user_id: myUserId,
+                                room_chat_id: ""
+                            }
+                        },
+                        $pull: { requestFriends: myUserId }
+                    }
+                )
+            }
 
         });
     });
