@@ -64,8 +64,22 @@ socket.on('SERVER_RETURN_MESSAGE', (data) => {
 
     body.insertBefore(div, boxTyping);
     body.scrollTop = body.scrollHeight;
+
+    // Preview Image
+    const boxImages = div.querySelector(".inner-images");
+    if (boxImages) {
+        const gallery = new Viewer(boxImages);
+    }
 });
 // END SERVER_RETURN_MESSAGE
+
+// Preview Image
+const chatBody = document.querySelector(".chat .inner-body");
+
+if (chatBody) {
+    const gallery = new Viewer(chatBody);
+}
+// End Preview Image
 
 // Scroll chat to bottom
 const bodyChat = document.querySelector('.chat .inner-body');
