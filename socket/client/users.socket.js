@@ -33,7 +33,7 @@ module.exports = async (res) => {
                 )
             };
 
-            // lấy độ dài acceptFriends của B trả về cho B
+            // Lấy độ dài acceptFriends của B trả về cho B (in ra realtime)
             const infoUserB = await User.findOne({ _id: targetFriendId });
             const lengthAcceptFriends = infoUserB.acceptFriends.length;
 
@@ -41,6 +41,16 @@ module.exports = async (res) => {
                 targetFriendId: targetFriendId,
                 lengthAcceptFriends: lengthAcceptFriends
             });
+
+            // Lấy thông tin của A trả về cho B (in ra A realtime)
+            const infoUserA = await User.findOne({
+                _id: myUserId
+            }).select("id avatar fullName");
+
+            socket.broadcast.emit("SERVER_RETURN_INFO_ACCEPT_FRIEND", {
+                targetFriendId: targetFriendId,
+                infoUserA: infoUserA
+            })
         })
 
         // Người dùng huỷ gửi yêu cầu kết bạn
