@@ -51,3 +51,14 @@ if (listBtnAcceptFriend) {
     });
 };
 // Hết chức năng chấp nhận kết bạn 
+
+// SERVER_RETURN_LENGTH_ACCEPT_FRIENDS
+socket.on("SERVER_RETURN_LENGTH_ACCEPT_FRIENDS", (data) => {
+    const badgeUserAccept = document.querySelector("[badge-users-accept]");
+    const userId = badgeUserAccept.getAttribute("badge-users-accept");
+
+    if (userId == data.targetFriendId) {
+        badgeUserAccept.innerHTML = `(${data.lengthAcceptFriends})`;
+    };
+});
+// End SERVER_RETURN_LENGTH_ACCEPT_FRIENDS

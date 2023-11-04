@@ -32,6 +32,15 @@ module.exports = async (res) => {
                     { $push: { requestFriends: targetFriendId } }
                 )
             };
+
+            // lấy độ dài acceptFriends của B trả về cho B
+            const infoUserB = await User.findOne({ _id: targetFriendId });
+            const lengthAcceptFriends = infoUserB.acceptFriends.length;
+
+            socket.broadcast.emit("SERVER_RETURN_LENGTH_ACCEPT_FRIENDS", {
+                targetFriendId: targetFriendId,
+                lengthAcceptFriends: lengthAcceptFriends
+            });
         })
 
         // Người dùng huỷ gửi yêu cầu kết bạn
@@ -51,6 +60,15 @@ module.exports = async (res) => {
                 { _id: myUserId },
                 { $pull: { requestFriends: targetFriendId } }
             );
+
+            // lấy độ dài acceptFriends của B trả về cho B
+            const infoUserB = await User.findOne({ _id: targetFriendId });
+            const lengthAcceptFriends = infoUserB.acceptFriends.length;
+
+            socket.broadcast.emit("SERVER_RETURN_LENGTH_ACCEPT_FRIENDS", {
+                targetFriendId: targetFriendId,
+                lengthAcceptFriends: lengthAcceptFriends
+            });
         });
 
         // Người dùng từ chối kết bạn
