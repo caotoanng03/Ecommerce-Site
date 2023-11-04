@@ -19,9 +19,22 @@ if (listBtnCancelFriend) {
         buttonCancelFriend.addEventListener("click", () => {
             buttonCancelFriend.closest(".box-user").classList.remove("add");
             const targetFriendId = buttonCancelFriend.getAttribute("btn-cancel-friend");
-            console.log(targetFriendId)
             socket.emit("CLIENT_CANCEL_FRIEND", targetFriendId);
         });
     });
 };
 // Hết chức năng huỷ gửi yêu cầu kết bạn 
+
+
+// Chức năng từ chối kết bạn 
+const listBtnRefuseFriend = document.querySelectorAll("[btn-refuse-friend]");
+if (listBtnRefuseFriend) {
+    listBtnRefuseFriend.forEach((buttonRefuseFriend) => {
+        buttonRefuseFriend.addEventListener("click", () => {
+            buttonRefuseFriend.closest(".box-user").classList.add("refuse");
+            const targetFriendId = buttonRefuseFriend.getAttribute("btn-refuse-friend");
+            socket.emit("CLIENT_REFUSE_FRIEND", targetFriendId);
+        });
+    });
+};
+// Hết chức năng từ chối kết bạn 
