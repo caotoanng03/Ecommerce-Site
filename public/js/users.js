@@ -65,14 +65,16 @@ socket.on("SERVER_RETURN_LENGTH_ACCEPT_FRIENDS", (data) => {
 
 // SERVER_RETURN_INFO_ACCEPT_FRIEND
 socket.on("SERVER_RETURN_INFO_ACCEPT_FRIEND", (data) => {
+    // Trang lời mời kết bạn
     const dataUsersAccept = document.querySelector("[data-users-accept]");
-    const userId = dataUsersAccept.getAttribute("data-users-accept");
-    if (userId == data.targetFriendId) {
-        const newBoxUser = document.createElement("div");
-        newBoxUser.classList.add("col-6");
-        newBoxUser.setAttribute("user-id", data.infoUserA._id);
+    if (dataUsersAccept) {
+        const userId = dataUsersAccept.getAttribute("data-users-accept");
+        if (userId == data.targetFriendId) {
+            const newBoxUser = document.createElement("div");
+            newBoxUser.classList.add("col-6");
+            newBoxUser.setAttribute("user-id", data.infoUserA._id);
 
-        newBoxUser.innerHTML = `
+            newBoxUser.innerHTML = `
             <div div class="box-user" >
             <div class="inner-avatar">
                 <img src=${data.infoUserA.avatar ? data.infoUserA.avatar : "/images/avatar.png"} alt="${data.infoUserA.fullName}">
@@ -107,26 +109,44 @@ socket.on("SERVER_RETURN_INFO_ACCEPT_FRIEND", (data) => {
         </div>
         `;
 
-        dataUsersAccept.appendChild(newBoxUser);
+            dataUsersAccept.appendChild(newBoxUser);
 
-        // Thêm bắt sự kiện xoá cho các nút mới của newBox (realtime)
-        const btnRefuseFriend = newBoxUser.querySelector("[btn-refuse-friend]");
-        btnRefuseFriend.addEventListener("click", () => {
-            btnRefuseFriend.closest(".box-user").classList.add("refuse");
-            const userId = btnRefuseFriend.getAttribute("btn-refuse-friend");
-            socket.emit("CLIENT_REFUSE_FRIEND", userId);
-        });
+            // Thêm bắt sự kiện xoá cho các nút mới của newBox (realtime)
+            const btnRefuseFriend = newBoxUser.querySelector("[btn-refuse-friend]");
+            btnRefuseFriend.addEventListener("click", () => {
+                btnRefuseFriend.closest(".box-user").classList.add("refuse");
+                const userId = btnRefuseFriend.getAttribute("btn-refuse-friend");
+                socket.emit("CLIENT_REFUSE_FRIEND", userId);
+            });
 
-        // Thêm bắt sự kiện cho nút chấp nhận lời mời kết bạn mới (realtime)
-        const btnAcceptFriend = newBoxUser.querySelector("[btn-accept-friend]");
-        btnAcceptFriend.addEventListener("click", () => {
-            console.log("da vao day");
-            btnAcceptFriend.closest(".box-user").classList.add("accepted");
-            const userId = btnAcceptFriend.getAttribute("btn-accept-friend");
-            socket.emit("CLIENT_CONFIRM_FRIEND", userId);
-        });
+            // Thêm bắt sự kiện cho nút chấp nhận lời mời kết bạn mới (realtime)
+            const btnAcceptFriend = newBoxUser.querySelector("[btn-accept-friend]");
+            btnAcceptFriend.addEventListener("click", () => {
+                console.log("da vao day");
+                btnAcceptFriend.closest(".box-user").classList.add("accepted");
+                const userId = btnAcceptFriend.getAttribute("btn-accept-friend");
+                socket.emit("CLIENT_CONFIRM_FRIEND", userId);
+            });
+        };
+    };
+    // Hết trang lời mời kết bạn
+
+    // Trang danh sách người dùng (sugesstions)
+    const dataUsersNotFriend = document.querySelector("[data-users-not-friend]");
+    console.log(dataUsersNotFriend);
+    if (dataUsersNotFriend) {
+        const userId = dataUsersNotFriend.getAttribute("data-users-not-friend");
+
+        if (userId == data.userId) {
+            // Xóa A khỏi danh sách của B
+            const boxUserRemove = dataUsersNotFriend.querySelector(`[user-id="${data.infoUserA._id}"]`);
+            if (boxUserRemove) {
+                dataUsersNotFriend.removeChild(boxUserRemove);
+            }
+        }
     }
-})
+    // Hết trang danh sách người dùng (sugesstions)
+});
 // END SERVER_RETURN_INFO_ACCEPT_FRIEND
 
 // SERVER_RETURN_USER_ID_CANCEL_FRIEND

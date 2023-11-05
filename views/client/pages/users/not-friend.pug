@@ -11,7 +11,7 @@ block main
                 +box-head("Suggestions")
 
 
-        .row
+        .row(data-users-not-friend=user.id)
             each user in users
                 .col-6
                     div(class="box-user")
