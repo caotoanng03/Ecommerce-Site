@@ -70,6 +70,7 @@ socket.on("SERVER_RETURN_INFO_ACCEPT_FRIEND", (data) => {
     if (userId == data.targetFriendId) {
         const newBoxUser = document.createElement("div");
         newBoxUser.classList.add("col-6");
+        newBoxUser.setAttribute("user-id", data.infoUserA._id);
 
         newBoxUser.innerHTML = `
             <div div class="box-user" >
@@ -108,15 +109,37 @@ socket.on("SERVER_RETURN_INFO_ACCEPT_FRIEND", (data) => {
 
         dataUsersAccept.appendChild(newBoxUser);
 
-        // bát sự kiện xoá cho các nút mới của newBox;
+        // Thêm bắt sự kiện xoá cho các nút mới của newBox (realtime)
         const btnRefuseFriend = newBoxUser.querySelector("[btn-refuse-friend]");
         btnRefuseFriend.addEventListener("click", () => {
             btnRefuseFriend.closest(".box-user").classList.add("refuse");
-
             const userId = btnRefuseFriend.getAttribute("btn-refuse-friend");
-
             socket.emit("CLIENT_REFUSE_FRIEND", userId);
+        });
+
+        // Thêm bắt sự kiện cho nút chấp nhận lời mời kết bạn mới (realtime)
+        const btnAcceptFriend = newBoxUser.querySelector("[btn-accept-friend]");
+        btnAcceptFriend.addEventListener("click", () => {
+            console.log("da vao day");
+            btnAcceptFriend.closest(".box-user").classList.add("accepted");
+            const userId = btnAcceptFriend.getAttribute("btn-accept-friend");
+            socket.emit("CLIENT_CONFIRM_FRIEND", userId);
         });
     }
 })
 // END SERVER_RETURN_INFO_ACCEPT_FRIEND
+
+// SERVER_RETURN_USER_ID_CANCEL_FRIEND
+socket.on("SERVER_RETURN_USER_ID_CANCEL_FRIEND", (data) => {
+    const dataUsersAccept = document.querySelector("[data-users-accept]");
+    const userId = dataUsersAccept.getAttribute("data-users-accept");
+    if (userId == data.targetFriendId) {
+        // Xoá A khỏi danh sách của B
+        const boxUserRemove = dataUsersAccept.querySelector(`[user-id="${data.myUserId}"]`);
+        console.log(boxUserRemove);
+        if (boxUserRemove) {
+            dataUsersAccept.removeChild(boxUserRemove);
+        }
+    };
+});
+// END SERVER_RETURN_USER_ID_CANCEL_FRIEND
