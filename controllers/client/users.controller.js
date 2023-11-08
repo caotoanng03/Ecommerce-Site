@@ -83,7 +83,7 @@ module.exports.accept = async (req, res) => {
         users: users
     })
 }
-// [GET] /users/accept
+// [GET] /users/friends
 module.exports.friends = async (req, res) => {
     // Socket
     usersSocket(res);
@@ -99,6 +99,11 @@ module.exports.friends = async (req, res) => {
         status: "active",
         deleted: false
     }).select("id avatar fullName statusOnline")
+
+    users.forEach(user => {
+        const infoUser = myUser.friendList.find(item => item.user_id == user.id);
+        user.roomChatId = infoUser.room_chat_id;
+    });
 
     res.render("client/pages/users/friends", {
         pageTitle: "All Friends",

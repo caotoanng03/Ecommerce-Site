@@ -25,7 +25,6 @@ if (listBtnCancelFriend) {
 };
 // Hết chức năng huỷ gửi yêu cầu kết bạn 
 
-
 // Chức năng từ chối kết bạn 
 const listBtnRefuseFriend = document.querySelectorAll("[btn-refuse-friend]");
 if (listBtnRefuseFriend) {
