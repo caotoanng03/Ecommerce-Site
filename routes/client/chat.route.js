@@ -1,8 +1,10 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const controller = require('../../controllers/client/chat.controller');
+const chatAuthMiddlware = require("../../middlewares/client/chat.middleware");
 
-router.get('/', controller.index);
+const controller = require("../../controllers/client/chat.controller");
+
+router.get("/:roomChatId", chatAuthMiddlware.isInRoomChat, controller.index);
 
 module.exports = router;
