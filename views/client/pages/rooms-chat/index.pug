@@ -16,17 +16,18 @@ block main
                 ) + New
 
         .row
-            .col-6
-                div(class="box-room")
-                    div(class="inner-avatar")
-                        img(
-                            src="https://robohash.org/hicveldicta.png"
-                            alt="Phòng abc"
-                        )
-                    div(class="inner-info")
-                        div(class="inner-name") Phòng abc
-                        div(class="inner-buttons")
-                            a(
-                                href="#"
-                                class="btn btn-sm btn-primary mr-1"
-                            ) Message
+            each room in listRoomChat
+                .col-6
+                    div(class="box-room")
+                        div(class="inner-avatar")
+                            img(
+                                src=(room.avatar ? room.avatar : "https://robohash.org/hicveldicta.png")
+                                alt=room.title
+                            )
+                        div(class="inner-info")
+                            div(class="inner-name") #{room.title}
+                            div(class="inner-buttons")
+                                a(
+                                    href="#"
+                                    class="btn btn-sm btn-primary mr-1"
+                                ) Message
