@@ -1,5 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400;500;600;700&family=Noto+Serif:wght@400;500;600;700&display=swap');
 
+html {
+    height: 100%
+}
+
+main {
+    flex: 1
+}
+
+body {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
 /* HEADER */
 .header {
     font-family: 'Noto Serif', sans-serif;
