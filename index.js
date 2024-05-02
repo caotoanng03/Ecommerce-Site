@@ -16,7 +16,7 @@ const port = process.env.PORT;
 app.use(methodOverride('_method'));
 
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: true }))
 
 // Config 
 const systemConfig = require('./config/system');
@@ -29,11 +29,11 @@ const routeClient = require('./routes/client/index.route');
 const routeAdmin = require('./routes/admin/index.route');
 
 // Static files
-app.use(express.static(`${__dirname}/public`));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Views 
-app.set('views', `${__dirname}/views`);
 app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
 
 // SocketIO
 const server = http.createServer(app);

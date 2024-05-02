@@ -178,7 +178,7 @@ module.exports.changeMultiStatus = async (req, res) => {
     }
 };
 
-// [PATCH] /admin/products/delete/:id
+// [DELETE] /admin/products/delete/:id
 module.exports.deleteItem = async (req, res) => {
     const permissions = res.locals.role.permissions;
     if (permissions.includes('products_delete')) {
